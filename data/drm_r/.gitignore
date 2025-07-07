@@ -6,3 +6,5 @@ data/*.csv
 data/*.xlsx
 *.html
 *.pdf
+.Rhistory
+.Rproj.user/
