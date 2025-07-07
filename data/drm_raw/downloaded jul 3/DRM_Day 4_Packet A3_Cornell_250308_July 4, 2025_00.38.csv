@@ -1,0 +1,210 @@
+StartDate,EndDate,Status,Progress,Duration (in seconds),Finished,RecordedDate,ResponseId,DistributionChannel,UserLanguage,Q_RecaptchaScore,A3SONA,A3ATT,SCI-SP1,SCI-SP2,SCI-SP3,SCI-SP4,SCI-IN1,SCI-IN2,SCI-IN3,SCI-IN4,SCI-GR1,SCI-GR2,SCI-GR3,SCI-GR4,SCI-AP1,SCI-AP2,SCI-AP3,SCI-AP4,SCI-SR1,SCI-SR2,SCI-SR3,SCI-SR4,SCI-ML1,SCI-ML2,SCI-ML3,SCI-ML4,SCI-HE1,SCI-HE2,SCI-HE3,SCI-HE4,TMMS-R1,TMMS-R2,TMMS-R3,TMMS-R4-R,TMMS-R5-R,TMMS-R6-R,TMMS-R7,TMMS-A1-R,TMMS-A2-R,TMMS-A3-R,TMMS-A4,TMMS-A5,TMMS-A6,TMMS-A7-R,TMMS-A8-R,TMMS-A9,TMMS-A10-R,TMMS-A11,TMMS-A12-R,TMMS-A13-R,TMMS-C1-R,TMMS-C2-R,Q62,TMMS-C3-R,TMMS-C4,TMMS-C5-R,TMMS-C6,TMMS-C7-R,TMMS-C8,TMMS-C9,TMMS-C10
+Start Date,End Date,Response Type,Progress,Duration (in seconds),Finished,Recorded Date,Response ID,Distribution Channel,User Language,Q_RecaptchaScore,"ID#
+
+
+
+Before we move on ––
+
+What's your participant ID# on SONA?
+
+SONA Provides you with an ID# (e.g., 12345). Visit SONA here to find it: https://cornellpsych.sona-systems.com/
+
+
+
+Note: If you don’t have a SONA ID#, please write your Cornell email address (e.g., jdf269@cornell.edu). Your data will remain confidential. I will ‘de-identify’ your information before sharing the study results with anyone.","On a scale of 1-7, please select the number ‘4’ below (to confirm your attention to this question).","You spend some time focusing on a spiritual subject (e.g., you meditate or pray or read on a spiritual subject, etc.).
+
+
+
+I am mindful of how important this subject is to me.","You have a comforting or enlightening spiritual experience.
+
+
+
+I am enthralled by this very personal experience.","You encounter an evocative spiritual work.
+
+
+
+I immerse myself in this meaningful experience.","You listen to sacred or spiritual music.
+
+
+
+I attend to the transcending feelings this music elicits.","You watch your favorite artist perform live.
+
+
+
+I yield to the excitement I feel.","Instructions: Imagine that you are in the situation described and rate the degree to which the statement corresponds to what you would typically do/think in this scenario. Try to be as truthful and accurate as you can.
+
+
+
+You spend some time gazing at the sky (e.g., a splendid skyscape, a majestic star field, a lovely sunset or sunrise, etc.).
+
+
+
+I marvel at the colors painted across the sky.","You attend a spectacular Broadway show or musical.
+
+
+
+I tune into the enthusiasm evoked by this performance.","You watch a moving dance performance.
+
+
+
+I embrace the emotions and beauty of the choreography.","Someone makes you dinner.
+
+
+
+I recognize and cherish the kindness of the act.","Your hands are full of heavy things, you have a long way to go, and a good soul offers to help you carry your load.
+
+
+
+I take the time to feel thankful for this person’s generosity.","A friend does you an unexpected favor.
+
+
+
+I feel fortunate to have such a friend.","Instructions: Imagine that you are in the situation described and rate the degree to which the statement corresponds to what you would typically do/think in this scenario. Try to be as truthful and accurate as you can.
+
+
+
+A friend helps you move to your new place.
+
+
+
+I am so pleased that my friend went out of their way for me.","You witness an awesome display of nature’s might (a lightning storm, torrential rains, snowstorm, etc.).
+
+
+
+I admire the breath-taking display.","An experience makes you realize how wonderful nature is (e.g., hearing birds sing, seeing and hearing a waterfall, petting a cute puppy, etc.).
+
+
+
+I take in the beauty of nature.","You stare at an impressive seascape.
+
+
+
+I am awed by the power and beauty of the sea.","You go to an exciting circus show.
+
+
+
+I am enchanted by the physical feats and visual spectacle I witness.","You have just achieved something dear to your heart.
+
+
+
+I relish the sense of accomplishment.","Instructions: Imagine that you are in the situation described and rate the degree to which the statement corresponds to what you would typically do/think in this scenario. Try to be as truthful and accurate as you can.
+
+
+
+You discover you have learned something new about the value of self-care.
+
+
+
+I recall the satisfaction derived from this self-improvement.","You look back on a challenging situation you faced and consider what you learned from it.
+
+
+
+I reflect on how I have grown from this challenge.","You realize something new about yourself.
+
+
+
+I attend to the satisfaction of having improved my self-knowledge.","You come across intriguing ideas about the meaning of life.
+
+
+
+I am captivated by these fascinating new insights about life.","You reflect on the ultimate meaning of life.
+
+
+
+I am aware of the interesting twists and turns of this existential exploration.","You ponder whether there is an overarching purpose to life.
+
+
+
+I concentrate on the profound ideas incited by this question.","You read a philosophical text on the finality of existence.
+
+
+
+I give free rein to my curiosity and engage in deep thoughts on this meaningful issue.","Instructions: Imagine that you are in the situation described and rate the degree to which the statement corresponds to what you would typically do/think in this scenario. Try to be as truthful and accurate as you can.
+
+
+
+You sit at a table and are handed your favorite dish (e.g., a juicy steak, your favorite junk food item, a tasty salad, a scrumptious seafood platter, etc.).
+
+
+
+I delight in the sight, the smell and the taste of this meal.","You lie on a cozy bed or sofa, wrapped in a soft blanket.
+
+
+
+I let myself unwind and luxuriate in comfort.","You sip your preferred drink (a gourmet coffee, a flavorful smoothie, a nice glass of beer or wine, etc.).
+
+
+
+I relish the exquisite taste.","You soak in a hot whirlpool or a spa.
+
+
+
+I take in the luxurious feeling of comfort, as the water soothes my muscles and relaxes me.",I try to think good thoughts no matter how bad I feel.,"Although I am sometimes sad, I have a mostly optimistic outlook.","When I become upset, I remind myself of all the pleasures in life.","When I am upset, I realize that the “good things in life” are illusions.","Although I am sometimes happy, I have a mostly pessimistic outlook.","No matter how bad I feel, I try to think about pleasant things.","When I am happy, I sometimes remind myself of everything that could go wrong.",People would be better off if they felt less and thought more.,I don’t think it’s worth paying attention to your emotions or moods.,I don’t usually care much about what I’m feeling.,Feelings give direction to life.,I believe in acting from the heart.,The best way for me to handle my feelings is to experience them to the fullest.,One should never be guided by emotions.,I never give into my emotions.,I pay a lot of attention to how I feel.,I don’t pay much attention to my feelings.,I often think about my feelings.,Feelings are a weakness humans have.,It is usually a waste of time to think about your emotions.,"Sometimes, I can’t tell what my feelings are.",I can never tell how I feel.,I can never tell how I feel.,My beliefs and opinions always seem to change depending on how I feel.,I am often aware of my feelings on a matter.,I am usually confused about how I feel.,I feel at ease about my emotions.,I can’t make sense out of my feelings.,I am usually very clear about my feelings,I usually know my feelings about a matter.,I almost always know exactly how I am feeling.
+"{""ImportId"":""startDate"",""timeZone"":""America/Denver""}","{""ImportId"":""endDate"",""timeZone"":""America/Denver""}","{""ImportId"":""status""}","{""ImportId"":""progress""}","{""ImportId"":""duration""}","{""ImportId"":""finished""}","{""ImportId"":""recordedDate"",""timeZone"":""America/Denver""}","{""ImportId"":""_recordId""}","{""ImportId"":""distributionChannel""}","{""ImportId"":""userLanguage""}","{""ImportId"":""Q_RecaptchaScore""}","{""ImportId"":""QID1719489891_TEXT""}","{""ImportId"":""QID67""}","{""ImportId"":""QID69""}","{""ImportId"":""QID70""}","{""ImportId"":""QID71""}","{""ImportId"":""QID72""}","{""ImportId"":""QID73""}","{""ImportId"":""QID74""}","{""ImportId"":""QID75""}","{""ImportId"":""QID76""}","{""ImportId"":""QID77""}","{""ImportId"":""QID78""}","{""ImportId"":""QID79""}","{""ImportId"":""QID80""}","{""ImportId"":""QID81""}","{""ImportId"":""QID82""}","{""ImportId"":""QID83""}","{""ImportId"":""QID84""}","{""ImportId"":""QID85""}","{""ImportId"":""QID86""}","{""ImportId"":""QID87""}","{""ImportId"":""QID88""}","{""ImportId"":""QID89""}","{""ImportId"":""QID90""}","{""ImportId"":""QID91""}","{""ImportId"":""QID92""}","{""ImportId"":""QID93""}","{""ImportId"":""QID94""}","{""ImportId"":""QID95""}","{""ImportId"":""QID96""}","{""ImportId"":""QID98""}","{""ImportId"":""QID99""}","{""ImportId"":""QID100""}","{""ImportId"":""QID101""}","{""ImportId"":""QID102""}","{""ImportId"":""QID103""}","{""ImportId"":""QID105""}","{""ImportId"":""QID106""}","{""ImportId"":""QID107""}","{""ImportId"":""QID108""}","{""ImportId"":""QID109""}","{""ImportId"":""QID110""}","{""ImportId"":""QID111""}","{""ImportId"":""QID113""}","{""ImportId"":""QID114""}","{""ImportId"":""QID115""}","{""ImportId"":""QID116""}","{""ImportId"":""QID117""}","{""ImportId"":""QID118""}","{""ImportId"":""QID119""}","{""ImportId"":""QID120""}","{""ImportId"":""QID121""}","{""ImportId"":""QID122""}","{""ImportId"":""QID123""}","{""ImportId"":""QID124""}","{""ImportId"":""QID125""}","{""ImportId"":""QID126""}","{""ImportId"":""QID127""}","{""ImportId"":""QID128""}","{""ImportId"":""QID129""}","{""ImportId"":""QID130""}"
+2025-04-25 18:52:08,2025-04-25 18:58:51,0,100,402,1,2025-04-25 18:58:51,R_6pR0nIDHkDSscuA,qr,EN,1,79939,4,3,28,1,5,29,29,29,29,29,29,29,29,28,5,4,28,3,28,5,5,5,29,28,28,29,29,5,28,2,4,4,5,4,2,4,5,5,5,4,5,4,5,4,4,5,5,5,5,1,4,2,2,4,2,1,2,2,4,2
+2025-04-26 09:07:09,2025-04-26 09:19:36,0,100,746,1,2025-04-26 09:19:36,R_3DwNBYDhsiqPKdC,anonymous,EN,1,72349,4,4,5,3,29,29,5,28,5,5,4,5,5,4,28,29,5,28,3,4,4,5,4,5,2,29,5,5,5,3,4,4,5,4,3,2,4,5,5,5,4,3,4,4,4,5,4,5,5,2,4,4,4,4,4,3,4,3,4,3
+2025-04-26 10:04:55,2025-04-26 10:08:44,0,100,228,1,2025-04-26 10:08:44,R_5pFgCqkGLlhOuBl,qr,EN,0.8999999761581421,"84256
+",4,3,3,3,3,28,4,5,28,5,4,28,28,4,4,4,4,4,3,5,4,3,3,3,3,5,28,4,4,2,4,2,4,2,4,4,4,4,3,4,4,4,4,4,3,4,3,4,4,2,2,2,2,3,3,3,2,3,3,2
+2025-04-26 10:55:00,2025-04-26 11:29:37,0,100,2076,1,2025-04-26 11:29:38,R_7Y3XItn11LJXE3q,anonymous,EN,0.8999999761581421," 89044 ",4,3,3,3,5,29,28,2,29,29,28,5,28,29,29,28,3,28,5,4,28,4,5,4,4,29,29,28,29,4,4,4,4,3,3,4,3,5,5,4,3,4,4,5,5,4,5,5,4,2,4,4,3,4,3,4,3,5,4,4
+2025-04-26 13:08:15,2025-04-26 13:13:11,0,100,296,1,2025-04-26 13:13:12,R_3Q9Zs5NBeisjUUV,qr,EN,1,88723,4,2,28,3,29,28,29,28,4,29,29,29,29,29,29,29,28,29,28,28,28,28,28,5,5,29,28,28,28,4,4,4,4,4,2,2,4,5,5,4,4,4,4,5,4,4,1,5,5,2,2,4,2,4,2,2,3,2,4,4
+2025-04-26 15:53:01,2025-04-26 16:01:04,0,100,482,1,2025-04-26 16:01:04,R_35xXqS7hUnNPfC9,qr,EN,1,78559,4,5,28,5,28,28,28,5,5,5,5,29,5,4,5,5,4,29,28,5,28,29,5,5,28,3,29,5,28,2,5,1,4,5,4,1,4,5,5,4,4,4,5,4,5,5,4,5,5,4,4,4,4,4,4,4,5,4,4,4
+2025-04-26 16:08:41,2025-04-26 16:15:57,0,100,436,1,2025-04-26 16:15:57,R_6CpWh2Ep7bzMTWD,qr,EN,0.8999999761581421,85612,4,1,1,2,2,28,28,29,4,29,29,29,29,3,29,28,4,29,28,28,29,28,5,5,3,29,29,28,5,2,4,2,2,1,4,1,1,5,4,5,5,1,5,4,4,4,4,5,4,2,5,5,4,4,2,2,2,2,4,1
+2025-04-26 17:23:58,2025-04-26 17:32:30,0,100,511,1,2025-04-26 17:32:30,R_6V271N5XRkR7CNz,qr,EN,0.8999999761581421,81274,4,5,28,4,4,28,29,5,4,29,29,5,28,3,5,3,4,28,3,5,5,28,4,4,2,29,28,28,3,4,4,3,4,4,2,2,4,5,4,5,4,5,3,4,4,4,4,5,5,4,5,5,4,5,4,4,5,5,5,4
+2025-04-26 20:58:45,2025-04-26 21:11:08,0,100,743,1,2025-04-26 21:11:09,R_3OIXM3C3pznUov8,anonymous,EN,1,91555,4,2,2,2,3,29,5,29,28,28,29,29,29,5,3,5,5,28,5,4,4,4,4,4,3,29,29,29,28,4,4,4,5,4,2,3,3,5,5,4,3,4,4,4,3,4,4,4,5,3,5,5,2,4,2,4,4,5,5,
+2025-04-26 21:58:44,2025-04-26 22:02:45,0,100,241,1,2025-04-26 22:02:46,R_3ML03iH9AiKXkJj,qr,EN,1,90934,4,4,5,5,2,29,5,5,5,29,29,29,28,3,28,5,1,28,5,29,5,4,4,4,2,29,29,5,29,2,2,2,2,1,4,4,4,5,4,4,5,3,4,4,4,4,5,5,5,2,2,2,2,2,1,2,2,2,2,2
+2025-04-27 00:29:54,2025-04-27 00:43:01,0,100,786,1,2025-04-27 00:43:01,R_6EsnRudSCEDmSD7,qr,EN,0.800000011920929,92773,4,2,3,3,2,28,28,2,5,29,4,29,29,2,28,5,4,28,5,29,28,28,5,5,4,29,4,29,3,4,5,4,4,5,2,2,5,5,5,5,4,4,4,3,4,5,4,5,5,3,4,4,4,3,3,2,3,4,4,3
+2025-04-27 08:01:56,2025-04-27 08:08:58,0,100,422,1,2025-04-27 08:08:59,R_71cG9BtWgMRTgoo,qr,EN,1,92158,4,5,4,4,2,28,5,5,28,28,5,28,28,28,28,5,2,5,28,28,5,28,28,4,5,4,3,5,28,3,4,4,4,4,4,3,4,4,4,4,4,2,4,5,3,4,3,5,4,3,4,4,2,4,4,3,4,4,4,3
+2025-04-26 08:05:21,2025-04-26 08:10:41,0,99,320,0,2025-04-27 08:10:45,R_1rwhp6u6sn4h6qg,qr,EN,0.8999999761581421,90541,4,2,1,2,2,3,28,5,3,28,28,28,28,5,28,29,3,29,2,4,5,28,5,5,28,28,4,29,2,1,2,1,4,2,5,4,2,3,4,4,3,1,4,4,3,4,3,4,4,2,4,4,4,3,2,2,4,2,3,1
+2025-04-26 17:12:54,2025-04-26 17:31:26,0,99,1112,0,2025-04-27 17:31:31,R_6CDymAx2wyQi3E7,qr,EN,0.8999999761581421,93289,4,3,3,2,3,28,4,4,5,5,5,28,5,3,5,28,4,5,28,5,5,28,5,28,4,29,28,29,5,4,5,4,4,4,2,1,2,4,2,4,4,4,1,4,2,2,2,4,4,2,4,5,2,4,3,4,3,4,4,4
+2025-04-26 18:01:32,2025-04-26 18:02:09,0,6,37,0,2025-04-27 18:02:11,R_33DAEsqLKfecRpc,qr,EN,0.8999999761581421,90934,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-04-27 18:12:02,2025-04-27 18:20:50,0,100,527,1,2025-04-27 18:20:50,R_7a0ID3fZu2jzrGx,qr,EN,1,"86776
+",4,28,29,28,29,29,28,29,29,29,29,28,29,5,29,29,5,29,29,29,29,29,29,29,29,28,29,28,29,4,5,4,5,4,2,4,4,5,5,5,4,4,4,5,5,4,5,5,4,2,4,4,5,5,3,4,3,4,5,2
+2025-04-27 20:23:40,2025-04-27 20:26:22,0,100,162,1,2025-04-27 20:26:23,R_7CH50qibWG35gq0,qr,EN,0.8999999761581421,90436,4,28,5,5,5,5,5,28,5,28,5,29,29,5,5,28,5,28,29,5,5,5,28,5,5,5,5,28,28,4,2,4,4,3,2,4,2,1,2,4,4,4,4,2,3,2,4,2,1,2,2,2,2,3,3,5,2,4,4,4
+2025-04-27 20:28:35,2025-04-27 20:35:29,0,100,414,1,2025-04-27 20:35:30,R_5uvWdZtQfJriPD8,qr,EN,1,70645,4,29,5,5,29,2,4,5,4,29,5,29,29,29,29,29,3,29,3,4,2,29,29,5,29,29,28,29,28,2,3,3,5,5,3,2,2,4,3,4,4,2,2,3,5,4,4,4,4,5,5,5,4,5,5,3,5,4,5,5
+2025-04-27 07:44:24,2025-04-27 21:39:11,0,100,50086,1,2025-04-27 21:39:11,R_7NIDS5qWOXhWvvf,qr,EN,0.8999999761581421,87397,4,28,4,3,28,29,29,29,29,29,28,28,29,4,5,5,3,28,5,28,5,5,2,5,28,2,3,3,29,2,2,3,2,2,4,5,4,5,5,5,5,4,4,4,5,5,5,5,5,2,4,4,4,5,3,2,4,3,4,2
+2025-04-27 21:14:05,2025-04-27 21:49:22,0,100,2117,1,2025-04-27 21:49:23,R_51AhQd8mNF1Y5oN,qr,EN,1,82327,4,28,28,28,5,29,29,29,28,28,29,29,29,29,29,29,29,5,28,5,28,28,28,29,28,28,28,28,29,2,4,2,4,4,4,2,4,4,4,3,3,3,4,4,1,4,1,5,4,3,5,5,3,1,4,2,3,4,4,4
+2025-04-27 21:46:10,2025-04-27 21:51:38,0,100,327,1,2025-04-27 21:51:38,R_7bfFTNC9VxCH4sh,qr,EN,0.8999999761581421,91699,4,29,29,5,29,4,28,4,3,28,29,29,28,4,4,5,4,29,29,29,3,29,4,29,3,5,4,1,1,3,5,1,3,5,2,1,2,5,4,1,2,3,1,3,2,4,3,3,3,4,5,5,4,4,4,3,5,4,5,4
+2025-04-27 09:40:37,2025-04-27 22:00:00,0,100,44363,1,2025-04-27 22:00:01,R_1OJ9nPKus53y7LB,qr,EN,0.8999999761581421,88153,4,1,3,1,1,5,28,4,3,29,29,28,29,28,29,28,5,29,2,29,29,5,5,3,1,29,29,28,29,2,2,2,5,2,3,4,5,5,4,4,4,2,4,2,4,3,4,5,5,4,4,4,5,4,3,3,4,3,4,2
+2025-04-27 22:52:05,2025-04-27 23:01:35,0,100,570,1,2025-04-27 23:01:36,R_1dJWurxvqLVqYlb,qr,EN,0.699999988079071,92266,4,3,29,4,28,28,29,3,2,29,5,28,5,28,28,28,1,28,5,5,29,5,28,5,28,5,4,5,29,2,5,3,5,5,4,4,5,5,5,4,4,4,5,4,5,5,5,5,4,2,4,4,2,4,3,4,4,2,4,4
+2025-04-27 23:17:59,2025-04-27 23:29:51,0,100,711,1,2025-04-27 23:29:51,R_6dwg6zOg4iEN8vT,anonymous,EN,0.8999999761581421,86614,4,5,4,4,4,28,28,5,28,29,29,29,29,4,28,28,28,3,3,5,3,4,3,3,5,29,29,4,29,2,3,2,4,3,4,4,5,5,5,5,5,4,5,4,5,5,5,5,5,2,3,3,4,3,3,3,3,4,3,2
+2025-04-28 09:27:31,2025-04-28 09:38:46,0,100,675,1,2025-04-28 09:38:47,R_77m4FjJ1uwdfWOR,qr,EN,1,93133,4,3,2,2,1,29,29,29,28,5,29,29,29,5,28,29,5,5,3,3,2,5,1,3,1,28,28,4,4,4,5,4,5,2,1,2,2,4,2,4,3,4,3,2,4,4,2,5,4,3,5,5,5,5,5,4,5,4,5,2
+2025-04-27 16:29:00,2025-04-27 16:33:00,0,99,239,0,2025-04-28 16:33:04,R_7LqBL28v2rGeCWt,qr,EN,0.8999999761581421,92932,4,29,29,29,29,29,5,29,1,29,29,28,28,29,29,29,28,28,29,29,29,5,29,29,3,5,28,29,29,3,5,4,4,5,2,4,2,3,2,4,2,3,4,4,4,4,4,1,1,3,4,5,2,5,4,4,3,4,3,4
+2025-04-28 21:23:38,2025-04-28 21:29:09,0,100,330,1,2025-04-28 21:29:09,R_6snU5TSn4n09oXW,qr,EN,0.8999999761581421,81931,4,28,28,28,29,28,29,28,4,29,29,29,29,28,28,29,28,28,28,28,29,28,28,28,29,29,28,28,29,4,4,4,4,4,2,4,3,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,2,4,4,4,4,4,4,2
+2025-04-28 23:40:15,2025-04-28 23:42:42,0,100,146,1,2025-04-28 23:42:42,R_3IVP9KG7vPy7CBU,anonymous,EN,1,84310,4,5,4,5,5,5,5,5,4,4,28,28,4,5,5,4,4,4,5,4,5,4,5,5,5,5,5,5,5,3,4,4,3,2,2,4,2,2,4,4,3,4,2,4,4,2,4,3,3,3,4,3,2,4,2,3,2,4,4,4
+2025-04-28 07:47:07,2025-04-28 07:52:52,0,99,344,0,2025-04-29 07:53:01,R_10eBz5r9nrnWBqN,qr,EN,1,83869,4,1,1,1,2,29,29,28,4,28,3,5,28,3,29,4,3,28,4,4,5,2,2,3,1,5,29,5,28,4,2,4,3,2,2,3,3,4,5,2,4,3,4,5,4,4,5,3,4,1,2,4,1,4,2,3,2,2,3,2
+2025-04-29 08:58:49,2025-04-29 09:08:01,0,100,552,1,2025-04-29 09:08:01,R_6QmMBaipTCjy0q5,qr,EN,1,91345,4,3,3,2,3,29,29,29,28,29,28,29,28,4,29,28,28,28,5,5,5,5,3,4,2,29,29,29,5,4,4,4,2,4,2,4,4,4,5,5,3,4,5,5,4,4,5,5,4,1,4,3,2,4,4,2,2,4,2,4
+2025-04-29 18:36:12,2025-04-29 18:45:30,0,100,557,1,2025-04-29 18:45:31,R_72yriqAVuztQB1d,qr,EN,0.8999999761581421,70261,4,4,3,5,1,29,28,5,4,29,29,29,29,3,28,5,5,29,5,28,28,29,28,5,29,29,28,28,28,2,4,2,4,3,4,1,5,5,5,5,4,3,5,5,4,4,4,5,5,2,5,5,2,4,4,3,4,5,5,4
+2025-04-29 18:43:51,2025-04-29 18:53:33,0,100,581,1,2025-04-29 18:53:33,R_324oEro2mfkMHUs,qr,EN,1,75835,4,2,4,4,2,4,28,28,4,29,29,29,29,28,28,28,5,5,4,28,29,28,5,5,28,28,29,5,29,3,3,4,4,3,3,1,2,5,5,5,2,4,4,4,5,5,5,4,5,1,5,5,5,5,5,4,5,5,4,3
+2025-04-28 20:22:07,2025-04-28 20:22:23,0,6,15,0,2025-04-29 20:22:25,R_7L6ySKdHoObseSR,qr,EN,1,88153,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-04-28 20:35:16,2025-04-28 20:38:56,0,49,220,0,2025-04-29 20:38:59,R_7TpZ4iw3iE9hZ3P,qr,EN,0.8999999761581421,90436,4,28,5,28,5,28,4,5,29,28,5,28,5,5,5,5,5,5,28,4,28,28,5,5,5,3,5,5,4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-04-28 20:35:26,2025-04-28 20:39:20,0,49,234,0,2025-04-29 20:39:28,R_5GWuPCnY2KMQ9wn,qr,EN,0.8999999761581421,70645,4,29,29,5,28,2,2,2,2,29,29,29,28,29,28,29,3,28,5,28,28,29,4,2,28,29,28,28,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-04-30 21:18:05,2025-04-30 21:45:02,0,100,1617,1,2025-04-30 21:45:03,R_6KkjupqAbrFD42W,qr,EN,1,90247,4,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,5,4,2,4,2,1,5,2,5,5,4,3,5,4,5,5,4,5,2,5,2,4,4,3,4,4,2,4,4,4,2
+2025-05-01 09:56:06,2025-05-01 10:21:59,0,100,1553,1,2025-05-01 10:21:59,R_52VvNnmaVVpukQw,qr,EN,0.8999999761581421,sec329@cornell.edu,4,3,28,1,28,2,28,2,3,28,28,29,5,28,29,4,1,4,5,28,29,5,4,5,4,3,4,2,3,4,5,4,2,5,2,2,2,2,4,2,4,2,4,5,4,4,4,5,2,2,3,4,1,2,2,2,2,1,2,2
+2025-05-01 13:38:39,2025-05-01 14:17:56,0,100,2357,1,2025-05-01 14:17:58,R_5gO3xJoTwxkMcfo,qr,EN,1,92173,4,3,5,4,3,29,28,29,4,5,28,28,28,5,5,4,29,29,5,29,3,28,4,3,3,29,4,5,28,4,4,4,4,4,2,3,3,5,4,3,4,4,4,3,4,4,3,5,4,2,4,3,2,4,2,3,2,3,3,4
+2025-05-01 17:36:36,2025-05-01 17:42:37,0,100,361,1,2025-05-01 17:42:38,R_1BzpZke6cxpUirf,qr,EN,1,70237,4,5,28,5,4,5,28,5,5,28,28,28,28,5,28,28,3,28,4,4,5,28,28,5,5,4,28,4,28,4,5,3,5,5,3,2,4,5,4,5,5,4,4,4,5,5,4,5,4,5,5,5,4,5,5,4,5,5,4,5
+2025-05-01 21:05:41,2025-05-01 21:10:51,0,100,309,1,2025-05-01 21:10:51,R_16W1mvJQNYIcBIR,anonymous,EN,1,79279,4,4,3,3,5,28,5,4,5,4,5,5,5,5,5,3,4,4,4,3,4,3,4,4,5,5,28,5,5,2,2,2,2,2,3,4,4,4,4,4,4,4,3,4,3,4,4,4,4,1,2,2,2,4,2,2,2,3,4,2
+2025-05-01 20:45:44,2025-05-01 21:16:25,0,100,1840,1,2025-05-01 21:16:25,R_7odx6nrfVpyTnqV,qr,EN,1,90466,4,29,29,2,2,1,29,5,3,29,5,29,29,29,28,5,5,28,29,29,28,2,29,3,5,29,5,29,4,1,4,4,4,3,1,3,2,1,4,3,4,4,2,4,2,5,3,4,5,2,5,5,3,5,5,3,2,3,4,4
+2025-05-01 20:46:17,2025-05-01 21:34:33,0,100,2895,1,2025-05-01 21:34:34,R_72QrdWxk5mch1jE,qr,EN,1,92218,4,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,29,2,4,1,3,2,4,4,2,4,5,4,4,5,1,5,5,5,5,2,2,2,4,5,1,4,2,1,1,2,4,2
+2025-05-01 21:43:45,2025-05-01 22:00:40,0,100,1015,1,2025-05-01 22:00:41,R_5gOu9gFssPz2skY,qr,EN,0.8999999761581421,92596,4,5,5,5,29,29,5,3,4,28,29,29,29,29,29,5,3,3,4,5,4,2,4,3,4,29,28,29,5,4,2,4,5,2,2,4,2,4,5,4,5,4,2,5,5,5,5,4,2,2,5,5,4,5,5,5,4,5,5,5
+2025-05-02 07:33:10,2025-05-02 07:37:56,0,100,285,1,2025-05-02 07:37:57,R_3rOhv0dW8Fy94vY,qr,EN,1,79450,4,4,5,5,29,29,29,3,4,4,29,28,5,2,29,29,2,29,28,5,28,5,2,29,5,29,29,29,3,2,4,4,5,5,4,1,5,5,5,4,4,4,5,5,5,5,5,5,5,1,5,5,5,4,4,2,5,4,4,4
+2025-05-02 12:01:31,2025-05-02 12:06:56,0,100,324,1,2025-05-02 12:06:57,R_5Mage8COfmn8r85,qr,EN,0.8999999761581421,90220,4,3,4,4,4,28,5,3,3,29,29,5,28,4,28,28,3,5,5,5,5,5,5,4,4,28,5,5,5,3,3,3,4,2,3,1,3,4,4,3,4,3,4,4,4,5,3,3,4,2,2,4,3,4,4,3,2,3,4,2
+2025-05-02 13:09:29,2025-05-02 13:22:57,0,100,808,1,2025-05-02 13:22:58,R_325Ylr9sw4x4nRu,qr,EN,1,85858,4,4,4,4,4,29,29,29,5,29,29,29,28,29,29,29,28,29,28,29,5,5,4,5,28,29,29,29,29,3,4,2,4,4,3,4,2,4,2,4,4,2,4,4,2,3,2,4,4,2,3,3,4,4,3,4,2,3,3,2
+2025-05-02 13:28:20,2025-05-02 13:45:08,0,100,1008,1,2025-05-02 13:45:09,R_389STXzEkuT88RH,qr,EN,1,92368,4,29,29,4,5,29,28,5,5,5,5,28,28,5,28,28,5,5,28,3,5,5,4,3,5,28,28,5,5,4,5,4,5,5,2,2,4,5,5,5,4,2,4,4,4,4,4,4,5,4,4,5,3,2,4,3,4,4,4,2
+2025-05-02 11:10:18,2025-05-02 11:15:56,0,97,337,0,2025-05-03 11:15:59,R_6j95BSZXtB8WlHh,anonymous,EN,0.8999999761581421,70258,4,1,2,2,2,5,28,28,3,5,28,28,28,3,5,5,4,5,5,5,28,28,29,28,29,28,28,29,5,2,3,3,2,2,2,5,3,4,5,5,4,4,5,5,4,4,4,5,5,2,3,4,2,4,3,2,4,2,4,4
+2025-05-03 17:34:41,2025-05-03 17:49:41,0,100,900,1,2025-05-03 17:49:42,R_38Mr5LiF4EQD9X4,qr,EN,0.8999999761581421,89662,4,29,29,4,5,5,5,3,3,29,29,29,28,29,28,29,3,4,5,4,2,3,5,2,2,29,29,3,5,4,3,4,2,3,3,3,2,4,4,5,4,2,3,4,4,5,5,4,4,4,5,4,1,5,4,4,5,2,5,4
+2025-05-03 21:06:59,2025-05-03 21:11:32,0,100,273,1,2025-05-03 21:11:33,R_6L1pV5zAgssVqdl,anonymous,EN,0.8999999761581421,93256,4,3,5,3,3,29,3,28,5,29,28,28,28,4,4,3,5,4,2,2,3,3,4,4,1,4,4,5,3,2,3,3,2,1,4,5,3,4,2,4,4,4,4,5,3,2,4,3,3,2,3,2,2,4,2,3,2,4,3,3
+2025-05-04 11:55:17,2025-05-04 12:10:53,0,100,935,1,2025-05-04 12:10:53,R_6GWafMLuzEK1lTe,qr,EN,0.8999999761581421,92449,4,2,2,1,1,28,4,3,4,5,5,29,29,2,4,3,3,4,3,3,2,2,3,3,1,4,4,29,5,2,3,2,4,4,3,2,2,4,3,3,3,3,3,2,2,3,3,3,3,2,3,3,3,3,3,3,3,3,3,3
+2025-05-03 14:27:46,2025-05-03 15:05:17,0,97,2250,0,2025-05-04 15:05:18,R_5fMG9k4Ah7aqthL,qr,EN,0.8999999761581421,85099,4,5,28,5,3,5,3,4,28,28,2,28,28,28,2,3,28,2,3,28,28,28,5,5,28,4,3,28,3,5,3,3,4,3,3,4,2,1,1,5,3,5,3,2,3,3,5,3,1,3,1,1,1,2,3,3,1,3,5,5
+2025-05-03 20:29:25,2025-05-03 20:34:18,0,49,292,0,2025-05-04 20:34:26,R_5RaaNfZuLeVn5R6,qr,EN,1,69571,4,4,3,28,2,1,29,2,4,28,5,4,3,29,29,29,28,29,1,5,5,28,5,28,28,28,29,5,29,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+2025-05-05 11:16:13,2025-05-05 14:33:35,0,100,11842,1,2025-05-05 14:33:35,R_1wRAazBvyczFGFR,qr,EN,0.8999999761581421,79054,4,5,28,29,5,29,29,28,29,28,5,28,5,5,29,28,5,5,5,28,28,5,5,28,28,29,5,28,29,4,4,3,4,4,2,4,4,4,3,4,4,4,3,4,4,4,4,5,3,3,2,2,2,3,2,4,2,4,4,2
+2025-05-05 15:46:45,2025-05-05 15:58:08,0,100,683,1,2025-05-05 15:58:09,R_1x0iWwgVh3mrcmB,qr,EN,1,70063,4,5,5,3,4,28,5,5,2,5,28,28,28,28,28,29,4,28,5,3,4,4,4,4,2,29,29,5,28,2,3,2,5,4,4,2,3,5,4,3,4,2,3,4,3,4,3,4,4,2,4,4,4,4,3,3,3,2,4,2
+2025-05-05 16:34:27,2025-05-05 16:42:40,0,100,492,1,2025-05-05 16:42:40,R_1WvxJ2gkPUwWMVx,qr,EN,1,taa54@cornell.edu,4,2,1,1,2,28,5,2,3,3,29,28,5,28,4,5,5,1,3,2,29,5,5,4,5,4,29,3,5,1,3,1,2,3,4,4,4,1,4,4,4,4,5,5,4,4,5,5,4,2,4,4,1,3,4,3,4,4,3,2
+2025-05-07 21:48:46,2025-05-07 22:11:08,0,100,1342,1,2025-05-07 22:11:09,R_7X5MMpUnBG1AFaU,qr,EN,1,79207,4,3,3,3,5,29,28,28,28,29,28,29,29,4,29,28,29,4,3,2,4,2,1,2,3,29,29,29,28,1,3,3,4,3,4,5,4,4,4,5,4,4,4,5,3,3,3,5,4,1,2,2,3,2,2,4,2,2,2,2
+2025-05-08 18:28:07,2025-05-08 19:02:19,0,100,2051,1,2025-05-08 19:02:19,R_7JDVpPrgn3rCRqi,qr,EN,1,91489,4,3,28,4,1,3,4,4,3,4,29,4,29,4,28,5,4,5,4,4,3,3,4,2,5,3,29,5,3,3,3,2,3,5,3,1,4,3,3,4,2,3,2,3,2,5,3,3,3,3,4,4,3,4,4,1,3,2,2,3
+2025-05-11 22:49:46,2025-05-11 22:59:16,0,100,570,1,2025-05-11 22:59:17,R_1PNTnDlfAIFhIqe,anonymous,EN,1,72976,4,1,4,1,2,29,28,28,3,28,29,28,28,4,5,2,5,29,5,5,28,2,4,3,3,29,29,28,28,3,2,3,3,2,4,4,4,5,5,4,4,5,5,5,5,5,5,5,5,2,2,2,4,4,2,2,2,1,4,4
+2025-05-12 19:54:33,2025-05-12 20:00:16,0,100,342,1,2025-05-12 20:00:16,R_5mWajqTh7VYxxOp,qr,EN,1,81739,4,1,29,28,29,28,29,29,29,29,29,29,29,1,29,29,29,29,28,3,5,5,2,3,4,29,29,5,29,2,3,3,2,3,2,1,5,5,5,5,5,5,5,5,5,4,5,5,5,2,4,4,4,4,3,2,2,5,1,4
+2025-05-15 21:02:57,2025-05-15 21:07:31,0,100,273,1,2025-05-15 21:07:32,R_6CvzFXU7PGkbSva,qr,EN,1,75361,4,28,28,28,3,29,29,4,4,29,29,29,29,28,29,28,5,28,29,28,29,28,3,2,2,29,29,29,29,3,2,2,4,4,4,4,4,5,5,4,5,5,4,4,5,5,5,4,5,1,4,4,2,2,2,3,2,2,2,1
+2025-05-21 18:18:46,2025-05-21 18:24:08,0,100,322,1,2025-05-21 18:24:09,R_16mwx6C8413Vo1Z,anonymous,EN,1,78976,4,5,3,3,3,5,5,5,3,28,5,28,28,28,5,5,4,4,4,28,4,5,5,4,3,5,5,3,3,3,2,3,5,4,4,2,3,4,3,3,2,2,3,3,2,3,3,5,4,3,2,3,4,2,3,3,3,2,3,3
+2025-05-23 00:38:58,2025-05-23 00:44:31,0,99,333,0,2025-05-24 00:44:36,R_72nM7wD8BWKLXiV,qr,EN,0.8999999761581421,92428,4,28,29,5,29,29,29,29,5,28,28,29,29,29,29,5,28,28,5,29,28,28,29,29,4,5,5,5,28,2,3,2,4,4,4,1,3,4,5,4,4,3,4,5,5,2,5,4,3,2,4,4,4,4,2,2,2,1,4,2
+2025-05-31 16:08:17,2025-05-31 16:16:39,0,100,501,1,2025-05-31 16:16:40,R_5MrMzuzTjIcLRzX,qr,EN,0.8999999761581421,91489,4,3,1,3,1,4,1,1,2,28,28,29,29,4,4,4,1,29,5,29,4,2,2,1,3,28,5,29,4,2,5,2,5,5,4,5,4,3,1,3,4,2,3,5,2,4,3,5,4,5,4,5,3,5,2,5,5,3,4,4
+2025-06-05 12:15:06,2025-06-05 12:22:42,0,100,456,1,2025-06-05 12:22:43,R_3QaXQMd6nmNQRCp,anonymous,EN,0.8999999761581421,82264,4,3,28,4,4,5,5,28,4,29,29,29,29,4,29,28,28,29,4,5,28,4,4,4,4,5,28,28,29,2,4,3,4,3,4,4,5,5,4,4,4,2,4,5,5,5,4,5,5,2,2,4,3,3,4,2,3,2,2,2
