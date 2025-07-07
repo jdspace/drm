@@ -12,33 +12,24 @@ library(knitr)
 library(janitor)
 library(tidyverse)
 library(scales)
+library(here)
 
-```
+# Declare this file as anchor for the {here} package
+here::i_am("data/drm_r/01_drm_clean.qmd")
 
-```         
-```
+```{library(readr)
 
+# Set the path to the CSV
+data_path <- here("data", "drm_merged", "drm_qualtrics_quantitative.csv")
+
+# Optional: check if the file exists
+if (!file.exists(data_path)) {
+  stop("Data file not found at: ", data_path)
+}
+
+# Read the CSV
+df <- read_csv(data_path)
+
+# Preview
+glimpse(df)}
 ------------------------------------------------------------------------
-
-## library: janitor
-
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
