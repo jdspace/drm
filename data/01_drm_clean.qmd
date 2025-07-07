@@ -1,0 +1,26 @@
+---
+title: "01_drm_clean"
+author: "Jeremy Faulk"
+format: html
+editor: visual
+output-dir: outputs
+---
+
+```{r setup, include=FALSE}
+# Load helpful libraries
+library(readxl)
+library(knitr)
+library(janitor)
+library(tidyverse)
+library(scales)
+
+# Optional: directory checks
+dir.create("data/drm_r", recursive = TRUE, showWarnings = FALSE)
+dir.create("outputs", showWarnings = FALSE)
+
+```
+
+```         
+```
+
+\`\`\`
