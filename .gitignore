@@ -1,5 +1,19 @@
-.Rproj.user
+# RStudio project files
+.Rproj.user/
 .Rhistory
 .RData
-.Ruserdata
 .DS_Store
+
+# Quarto/knitr cache and output
+*_cache/
+*_files/
+
+# Rendered output
+*.html
+*.pdf
+*.docx
+outputs/
+
+# Raw data (optional: include only if you don’t want Git tracking data files)
+data/*.csv
+data/*.xlsx

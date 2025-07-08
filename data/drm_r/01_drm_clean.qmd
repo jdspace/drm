@@ -1,93 +1,175 @@
 ---
 title: "01_drm_clean"
 author: "Jeremy Faulk"
-format:
-  html: default
-  pdf: default
+format: html
 editor: visual
 ---
 
-## 📦 Load Libraries and Set Root
+## Setup
 
 ```{r setup, include=FALSE}
-# Load helpful libraries
+# 📦 Load helpful libraries
+library(here)
 library(readxl)
-library(knitr)
 library(janitor)
 library(tidyverse)
 library(scales)
-library(here)
+library(knitr)
 
-# Declare project root for 'here' (only needed once per session)
+# 📌 Declare project root for 'here' (only needed once per session)
 here::i_am("data/drm_r/01_drm_clean.qmd")
 ```
 
-------------------------------------------------------------------------
+##📥 Load Combined DRM Dataset
 
-## 📥 Load Data
-
-```{r load-data, echo=TRUE}
-# Define and read data
+```{r}
+# 🔍 Define and read the combined DRM data file
 path <- here("data", "drm_merged", "drm_qualtrics_quantitative.csv")
 if (!file.exists(path)) stop("File not found: ", path)
+# First row is column label
 df <- read_csv(path)
 
-# Preview first few rows
-head(df)
+# 👀 Preview structure
+df %>%
+  slice_head(n = 10)
 ```
 
-------------------------------------------------------------------------
+##🧼 Clean and Standardize
 
-## 📊 Export Summary
+```{r}
+# 🗑️ Remove metadata/question label rows
+df <- df[-c(2, 75, 81, 85, 90, 92, 95), ]
 
-```{r write-summary, echo=TRUE}
-# Generate and write summary to outputs folder
+# 🧽 Standardize column names
+df <- clean_names(df)
+
+# 🚮 Remove junk rows that start with '{\"ImportId\":' in the SONA column
+df <- df %>%
+  filter(!str_detect(sona, "^\\{\"ImportId\":"))
+
+# ✅ Confirm remaining rows
+cat("Remaining rows after removing junk entries:", nrow(df), "\n")
+
+# 🧼 Normalize SONA values (lowercase + trim whitespace)
+df <- df %>%
+  mutate(sona = str_trim(tolower(sona)))
+
+# 🧾 SONA IDs to exclude (also lowercase to match)
+drop_ids <- tolower(c(
+  "Jps395@cornell.edu", "Njw75@cornell.edu", "92419", "87832", 
+  "bjl99@cornell.edu", "74467", "Kl547@cornell.edu", "86920", 
+  "km656@cornell.edu", "71665", "93025"
+))
+
+# 🚫 Filter out excluded participants
+df <- df %>%
+  filter(!(sona %in% drop_ids))
+
+# ✅ Check result
+cat("Remaining rows after exclusion:", nrow(df), "\n")
+
+# 🧽 Remove duplicate suffixes (keep only .x columns if .y exists)
+df <- df %>%
+  select(-matches("\\.y$")) %>%  # Drop columns ending in .y
+  rename_with(~ str_remove(., "\\.x$"), matches("\\.x$"))  # Remove .x from column names
+
+
+# 🧬 Group by SONA and coalesce values across duplicate rows
+df_merged <- df %>%
+  group_by(sona) %>%
+  summarise(across(everything(), ~ suppressWarnings(na.omit(.x)[1])), .groups = "drop")
+
+# 🧾 Check number of unique vs original SONA rows
+cat("Original rows:", nrow(df), "\n")
+cat("After merge:", nrow(df_merged), "\n")
+
+# 🪟 View a few cases to verify
+df_merged %>% filter(sona %in% c("78559", "72349")) %>% View()
+
+# ✅ Confirm remaining rows
+cat("Remaining rows after coalescing duplicate sona entries:", nrow(df), "\n")
+```
+
+## 🚫 Drop Participants Without Episode-Level Data
+
+```{r}
+
+# 🧼 Drop rows where `sona` matches any in `drop_ids`
+df <- df %>% 
+  filter(!(sona %in% drop_ids))
+
+# ✅ Confirm how many rows remain
+cat("Remaining participants after exclusion:", nrow(df), "\n")
+```
+
+##✅ 🔍 Flag Missing SONA IDs
+
+```{r}
+df <- df %>%
+  mutate(sona_status = case_when(
+    is.na(sona) ~ "missing",
+    TRUE ~ "present"
+  ))
+
+# 🔢 Count how many are missing
+table(df$sona_status)
+```
+
+## 📊 Export Summary Statistics
+
+```{r}
+# 📋 Create a summary table
 summary_df <- as.data.frame(summary(df))
+
+# 💾 Define output file path
 output_file <- here("data", "drm_r", "outputs", paste0("summary_", Sys.Date(), ".csv"))
+
+# 📤 Save to outputs folder
 write_csv(summary_df, output_file)
 ```
 
-------------------------------------------------------------------------
+## Manual Instructions to Commit to GitHub (i.e., not auto)
 
-## 📁 .gitignore
+```{text}
+# 🚀 Manually run this chunk when you're ready to commit
 
-``` bash
-# RStudio files
+# Set your commit message manually here
+message <- "Quick update via Quarto chunk"
+
+# Commit and push to GitHub
+system("git add .")
+system(paste('git commit -m', shQuote(message)))
+system("git push")
+
+---
+### 🧠 Why `eval=FALSE`?
+
+# - So the commit isn’t triggered **automatically** every time you render.
+# - You’ll run this chunk manually (e.g., click the green ▶️ in the corner), **when** you want to push to GitHub.
+
+```
+--------------------
+
+## 🚫 .gitignore Reference
+
+```{text}
+# RStudio project files
 .Rproj.user/
 .Rhistory
 .RData
 .DS_Store
 
-# Quarto/knitr output and cache
+# Quarto/knitr cache and output
 *_cache/
 *_files/
 
-# Output and intermediate render artifacts
+# Rendered output files
 outputs/
 *.html
 *.pdf
 *.docx
 
-# Raw data files
+# Raw data
 data/*.csv
 data/*.xlsx
-```
-
-------------------------------------------------------------------------
-
-## 🛠️ Setup Script Example (Optional)
-
-``` r
-# You can use this in a separate script if needed
-
-packages <- c("here", "readxl", "janitor", "tidyverse", "scales")
-installed <- rownames(installed.packages())
-
-for (pkg in packages) {
-  if (!(pkg %in% installed)) install.packages(pkg)
-  library(pkg, character.only = TRUE)
-}
-
-fs::dir_create("data/drm_r/outputs")
-fs::dir_create("data/drm_r/scripts")
 ```
