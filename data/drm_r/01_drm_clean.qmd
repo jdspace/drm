@@ -1,9 +1,13 @@
 ---
 title: "01_drm_clean"
 author: "Jeremy Faulk"
-format: html
+format:
+  html: default
+  pdf: default
 editor: visual
 ---
+
+## 📦 Load Libraries and Set Root
 
 ```{r setup, include=FALSE}
 # Load helpful libraries
@@ -15,27 +19,39 @@ library(scales)
 library(here)
 
 # Declare project root for 'here' (only needed once per session)
-here::i_am("01_drm_clean.qmd")
+here::i_am("data/drm_r/01_drm_clean.qmd")
 ```
 
-```{r load-data}
+------------------------------------------------------------------------
+
+## 📥 Load Data
+
+```{r load-data, echo=TRUE}
 # Define and read data
 path <- here("data", "drm_merged", "drm_qualtrics_quantitative.csv")
 if (!file.exists(path)) stop("File not found: ", path)
 df <- read_csv(path)
+
+# Preview first few rows
 head(df)
 ```
 
-```{r write-summary}
-# Convert summary list to data.frame and write to CSV
+------------------------------------------------------------------------
+
+## 📊 Export Summary
+
+```{r write-summary, echo=TRUE}
+# Generate and write summary to outputs folder
 summary_df <- as.data.frame(summary(df))
-output_file <- here("data", "drm_r", "outputs", paste0("summary_", format(Sys.time(), "%Y-%m-%d_%H%M%S"), ".csv"))
+output_file <- here("data", "drm_r", "outputs", paste0("summary_", Sys.Date(), ".csv"))
 write_csv(summary_df, output_file)
 ```
 
-# ----------------------
-# .gitignore
-# ----------------------
+------------------------------------------------------------------------
+
+## 📁 .gitignore
+
+``` bash
 # RStudio files
 .Rproj.user/
 .Rhistory
@@ -55,19 +71,23 @@ outputs/
 # Raw data files
 data/*.csv
 data/*.xlsx
+```
 
-# ----------------------
-# project_setup.R
-# ----------------------
-# This script installs needed packages and creates folders
+------------------------------------------------------------------------
+
+## 🛠️ Setup Script Example (Optional)
+
+``` r
+# You can use this in a separate script if needed
 
 packages <- c("here", "readxl", "janitor", "tidyverse", "scales")
 installed <- rownames(installed.packages())
+
 for (pkg in packages) {
   if (!(pkg %in% installed)) install.packages(pkg)
   library(pkg, character.only = TRUE)
 }
 
-# Create standard folders
 fs::dir_create("data/drm_r/outputs")
 fs::dir_create("data/drm_r/scripts")
+```
