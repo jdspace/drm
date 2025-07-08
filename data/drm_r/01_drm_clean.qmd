@@ -14,22 +14,60 @@ library(tidyverse)
 library(scales)
 library(here)
 
-# Declare this file as anchor for the {here} package
-here::i_am("data/drm_r/01_drm_clean.qmd")
+# Declare project root for 'here' (only needed once per session)
+here::i_am("01_drm_clean.qmd")
+```
 
-```{library(readr)
+```{r load-data}
+# Define and read data
+path <- here("data", "drm_merged", "drm_qualtrics_quantitative.csv")
+if (!file.exists(path)) stop("File not found: ", path)
+df <- read_csv(path)
+head(df)
+```
 
-# Set the path to the CSV
-data_path <- here("data", "drm_merged", "drm_qualtrics_quantitative.csv")
+```{r write-summary}
+# Convert summary list to data.frame and write to CSV
+summary_df <- as.data.frame(summary(df))
+output_file <- here("data", "drm_r", "outputs", paste0("summary_", format(Sys.time(), "%Y-%m-%d_%H%M%S"), ".csv"))
+write_csv(summary_df, output_file)
+```
 
-# Optional: check if the file exists
-if (!file.exists(data_path)) {
-  stop("Data file not found at: ", data_path)
+# ----------------------
+# .gitignore
+# ----------------------
+# RStudio files
+.Rproj.user/
+.Rhistory
+.RData
+.DS_Store
+
+# Quarto/knitr output and cache
+*_cache/
+*_files/
+
+# Output and intermediate render artifacts
+outputs/
+*.html
+*.pdf
+*.docx
+
+# Raw data files
+data/*.csv
+data/*.xlsx
+
+# ----------------------
+# project_setup.R
+# ----------------------
+# This script installs needed packages and creates folders
+
+packages <- c("here", "readxl", "janitor", "tidyverse", "scales")
+installed <- rownames(installed.packages())
+for (pkg in packages) {
+  if (!(pkg %in% installed)) install.packages(pkg)
+  library(pkg, character.only = TRUE)
 }
 
-# Read the CSV
-df <- read_csv(data_path)
-
-# Preview
-glimpse(df)}
-------------------------------------------------------------------------
+# Create standard folders
+fs::dir_create("data/drm_r/outputs")
+fs::dir_create("data/drm_r/scripts")
