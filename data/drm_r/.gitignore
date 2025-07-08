@@ -1,11 +1,19 @@
+# RStudio files
+.Rproj.user/
 .Rhistory
 .RData
-.Rproj.user
 .DS_Store
-data/*.csv
-data/*.xlsx
+
+# Quarto/knitr cache & output
+*_cache/
+*_files/
+
+# Output folders and render artifacts
+outputs/
 *.html
 *.pdf
-.Rhistory
-.Rproj.user/
-.DS_Store
+*.docx
+
+# Data files (to avoid versioning raw sensitive data)
+data/*.csv
+data/*.xlsx
