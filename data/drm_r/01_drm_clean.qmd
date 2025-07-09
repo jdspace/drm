@@ -173,3 +173,52 @@ outputs/
 data/*.csv
 data/*.xlsx
 ```
+
+## 🚧 Identify Numeric Variables
+
+```{r}
+# 🔍 Identify numeric columns
+numeric_cols <- df %>%
+  select(where(is.numeric)) %>%
+  names()
+
+# 🧾 Print the list
+print(numeric_cols)
+
+# 🔍 Preview data from first 5 numeric columns (10 rows)
+df %>%
+  select(all_of(head(numeric_cols, 5))) %>%
+  slice_head(n = 10)
+
+# 🔁 Try to convert character columns to numeric where possible
+df <- df %>%
+  mutate(across(where(is.character), ~ suppressWarnings(as.numeric(.x)), .names = "num_{.col}"))
+
+# 🔍 Now select the newly created numeric columns
+numeric_cols <- df %>%
+  select(starts_with("num_")) %>%
+  names()
+
+# 🧾 Confirm that it worked
+print(numeric_cols)
+```
+
+## 🚨 Flag Potential Outliers (±3 SD)
+
+```{r}
+# ⚠️ Flag outliers using ±3 SD rule
+outlier_df <- df %>%
+  select(all_of(numeric_cols)) %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "value") %>%
+  group_by(variable) %>%
+  mutate(
+    mean_val = mean(value, na.rm = TRUE),
+    sd_val   = sd(value, na.rm = TRUE),
+    is_outlier = abs(value - mean_val) > 3 * sd_val
+  ) %>%
+  filter(is_outlier)
+
+# 🧾 Show top rows of flagged outliers
+head(outlier_df)
+```
+
