@@ -15,6 +15,7 @@ library(janitor)
 library(tidyverse)
 library(scales)
 library(knitr)
+library(purrr)
 
 # 📌 Declare project root for 'here' (only needed once per session)
 here::i_am("data/drm_r/01_drm_clean.qmd")
@@ -73,11 +74,70 @@ df <- df %>%
   select(-matches("\\.y$")) %>%  # Drop columns ending in .y
   rename_with(~ str_remove(., "\\.x$"), matches("\\.x$"))  # Remove .x from column names
 
+# 🔁 Convert character-like columns to numeric, EXCLUDING `sona`
+df <- df %>%
+  mutate(across(
+    .cols = intersect(names(select(., where(is.character))), names(df)[names(df) != "sona"]),
+    .fns = ~ suppressWarnings(as.numeric(.))
+  ))
 
-# 🧬 Group by SONA and coalesce values across duplicate rows
+# 🧾 Find duplicated SONA IDs
+duplicated_ids <- df %>%
+  filter(sona %in% sona[duplicated(sona) | duplicated(sona, fromLast = TRUE)])
+
+# 💾 Save to output folder
+write_csv(duplicated_ids, here("data", "drm_r", "outputs", "duplicated_ids.csv"))
+
+# 📊 Coalesce rows: keep *non-NA values* where possible
 df_merged <- df %>%
   group_by(sona) %>%
-  summarise(across(everything(), ~ suppressWarnings(na.omit(.x)[1])), .groups = "drop")
+  summarise(across(everything(), ~ reduce(.x, coalesce)), .groups = "drop")
+
+debug_df <- df %>%
+  filter(sona %in% duplicated_ids_list) %>%
+  arrange(sona)
+View(debug_df)
+
+# 🔍 Identify numeric columns from df_merged, EXCLUDING `sona` if it was coerced
+numeric_cols <- df_merged %>%
+  select(where(is.numeric)) %>%
+  names() %>%
+  setdiff("sona")
+
+# 📋 Preview
+head(numeric_cols)
+
+# 🔍 Identify numeric columns containing 99s
+columns_with_99 <- df %>%
+  select(where(is.numeric)) %>%
+  select(where(~ any(. == 99, na.rm = TRUE))) %>%
+  names()
+
+# 📊 Count how many 99s are in each column
+count_99s <- sapply(df[columns_with_99], function(x) sum(x == 99, na.rm = TRUE))
+cat("🔢 Number of 99s to convert to NA:\n")
+print(count_99s)
+
+# 🔄 Replace 99s with NA in those columns
+df[columns_with_99] <- lapply(df[columns_with_99], function(x) replace(x, x == 99, NA))
+
+# 📍 Identify duplicated sona IDs (before merging)
+duplicated_ids_list <- df %>%
+  count(sona) %>%
+  filter(n > 1) %>%
+  pull(sona)
+
+# 📄 Create a tibble of all rows with those IDs
+duplicated_ids <- df %>%
+  filter(sona %in% duplicated_ids_list) %>%
+  arrange(sona)
+
+# 💾 Export to CSV for manual inspection
+output_path <- here::here("data", "drm_r", "outputs", "duplicated_ids.csv")
+write_csv(duplicated_ids, output_path)
+
+# 👁️ Done! View it in RStudio
+View(duplicated_ids)
 
 # 🧾 Check number of unique vs original SONA rows
 cat("Original rows:", nrow(df), "\n")
@@ -100,6 +160,28 @@ df <- df %>%
 
 # ✅ Confirm how many rows remain
 cat("Remaining participants after exclusion:", nrow(df), "\n")
+```
+
+## 🚫 Drop Columns Without Useful Data
+```{r}
+# 🧹 Identify columns to drop by pattern (prefix or exact match)
+cols_to_drop <- grep(
+  "^start_date|^end_date|^status|^progress|^ip_address|^q_recaptcha_score|^finished|^distribution_channel|^user_language|^no_consent_exit|^recorded_date|^response_id",
+  names(df_merged),
+  value = TRUE
+)
+
+# 👀 Preview the columns that will be removed
+cat("Columns to be dropped:\n")
+print(cols_to_drop)
+
+# 🧽 Drop the columns from df_merged and assign to df
+df <- df_merged %>%
+  select(-all_of(cols_to_drop))
+
+cat("Final number of rows:", nrow(df), "\n")
+head(df)
+
 ```
 
 ##✅ 🔍 Flag Missing SONA IDs
@@ -177,18 +259,20 @@ data/*.xlsx
 ## 🚧 Identify Numeric Variables
 
 ```{r}
-# 🔍 Identify numeric columns
+# 🔍 Re-identify numeric columns from final df
 numeric_cols <- df %>%
   select(where(is.numeric)) %>%
   names()
 
-# 🧾 Print the list
-print(numeric_cols)
+# 🧾 Print preview of available numeric columns
+cat("Preview of numeric columns in final df:\n")
+print(head(numeric_cols))
 
-# 🔍 Preview data from first 5 numeric columns (10 rows)
+# 👀 Check first few rows of numeric data
 df %>%
   select(all_of(head(numeric_cols, 5))) %>%
   slice_head(n = 10)
+
 
 # 🔁 Try to convert character columns to numeric where possible
 df <- df %>%
@@ -200,12 +284,20 @@ numeric_cols <- df %>%
   names()
 
 # 🧾 Confirm that it worked
-print(numeric_cols)
+head(numeric_cols)
 ```
 
 ## 🚨 Flag Potential Outliers (±3 SD)
 
 ```{r}
+# 🔍 Re-identify numeric columns from df
+numeric_cols <- df %>%
+  select(where(is.numeric)) %>%
+  names()
+
+# 🔢 Show how many numeric columns
+cat("Number of numeric columns being checked for outliers:", length(numeric_cols), "\n")
+
 # ⚠️ Flag outliers using ±3 SD rule
 outlier_df <- df %>%
   select(all_of(numeric_cols)) %>%
@@ -218,7 +310,9 @@ outlier_df <- df %>%
   ) %>%
   filter(is_outlier)
 
-# 🧾 Show top rows of flagged outliers
+# 🧾 Show results
+cat("Number of outliers flagged:", nrow(outlier_df), "\n")
 head(outlier_df)
+
 ```
 
