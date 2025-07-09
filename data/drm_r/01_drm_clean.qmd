@@ -16,6 +16,7 @@ library(tidyverse)
 library(scales)
 library(knitr)
 library(purrr)
+library(naniar)
 
 # 📌 Declare project root for 'here' (only needed once per session)
 here::i_am("data/drm_r/01_drm_clean.qmd")
@@ -38,15 +39,45 @@ df %>%
 ##🧼 Clean and Standardize
 
 ```{r}
+## 🧷 Load and Attach Human-Readable Variable Labels (Pre-Cleaning)
+
+# 📤 Load human-readable variable labels
+question_list <- read_csv(here("data", "drm_merged", "drm_question_list.csv"))
+
+# 🧤 Clean and match question list
+question_list <- question_list %>%
+  rename(
+    variable_raw = 1,  # original names from Qualtrics
+    label = 2,
+    level = 3
+  ) %>%
+  mutate(
+    variable = make_clean_names(variable_raw),
+    label = str_trim(label),
+    level = as.character(level)
+  )
+
 # 🗑️ Remove metadata/question label rows
 df <- df[-c(2, 75, 81, 85, 90, 92, 95), ]
 
-# 🧽 Standardize column names
+# 🧽 Standardize column names BEFORE defining original_names
 df <- clean_names(df)
 
-# 🚮 Remove junk rows that start with '{\"ImportId\":' in the SONA column
+# 💾 Now capture the cleaned names (after cleaning)
+original_names <- names(df)
+
+# 🚮 Remove junk rows that start with '{"ImportId":' in the SONA column
 df <- df %>%
   filter(!str_detect(sona, "^\\{\"ImportId\":"))
+
+# 🏷️ Filter question_list for vars in df and build lookup
+label_lookup <- question_list %>%
+  filter(variable %in% original_names) %>%
+  select(variable, label, level)
+
+# 🧾 Merge with your working df's variable names
+variable_metadata <- tibble(variable = original_names) %>%
+  left_join(label_lookup, by = "variable")
 
 # ✅ Confirm remaining rows
 cat("Remaining rows after removing junk entries:", nrow(df), "\n")
@@ -55,7 +86,7 @@ cat("Remaining rows after removing junk entries:", nrow(df), "\n")
 df <- df %>%
   mutate(sona = str_trim(tolower(sona)))
 
-# 🧾 SONA IDs to exclude (also lowercase to match)
+# 🧾 SONA IDs to exclude
 drop_ids <- tolower(c(
   "Jps395@cornell.edu", "Njw75@cornell.edu", "92419", "87832", 
   "bjl99@cornell.edu", "74467", "Kl547@cornell.edu", "86920", 
@@ -66,13 +97,12 @@ drop_ids <- tolower(c(
 df <- df %>%
   filter(!(sona %in% drop_ids))
 
-# ✅ Check result
 cat("Remaining rows after exclusion:", nrow(df), "\n")
 
 # 🧽 Remove duplicate suffixes (keep only .x columns if .y exists)
 df <- df %>%
-  select(-matches("\\.y$")) %>%  # Drop columns ending in .y
-  rename_with(~ str_remove(., "\\.x$"), matches("\\.x$"))  # Remove .x from column names
+  select(-matches("\\.y$")) %>%
+  rename_with(~ str_remove(., "\\.x$"), matches("\\.x$"))
 
 # 🔁 Convert character-like columns to numeric, EXCLUDING `sona`
 df <- df %>%
@@ -81,56 +111,39 @@ df <- df %>%
     .fns = ~ suppressWarnings(as.numeric(.))
   ))
 
-# 🧾 Find duplicated SONA IDs
+# 🗑️ Identify all-NA columns
+na_only_cols <- df %>%
+  select(where(~ all(is.na(.)))) %>%
+  names()
+
+cat("🔻 Dropping", length(na_only_cols), "columns that are all NA\n")
+print(na_only_cols)
+
+# 🧾 Save audit log of dropped columns
+na_log_path <- here::here("data", "drm_r", "outputs", paste0("dropped_na_columns_", Sys.Date(), ".csv"))
+write_csv(tibble(dropped_column = na_only_cols), na_log_path)
+
+cat("✅ Dropped column names saved to:\n", na_log_path, "\n")
+
+# 🧹 Drop those columns from the dataframe
+df <- df %>%
+  select(-all_of(na_only_cols))
+
+# 🔎 Find duplicated SONA IDs
 duplicated_ids <- df %>%
   filter(sona %in% sona[duplicated(sona) | duplicated(sona, fromLast = TRUE)])
 
-# 💾 Save to output folder
+# 💾 Save to output folder for auditing
 write_csv(duplicated_ids, here("data", "drm_r", "outputs", "duplicated_ids.csv"))
 ```
 
-
-## Identify Person-Level vs. Episode-Level Dataframes
-
-
-```{r}
-# 📋 Create a variable-level tagging template for manual review
-variable_levels <- tibble(
-  variable = names(df),
-  level = ""  # Placeholder to manually enter 'person' or 'episode'
-)
-
-# 💾 Save to outputs folder for tagging
-write_csv(variable_levels, here("data", "drm_r", "outputs", "variable_levels_template.csv"))
-
-# 👁️ View in RStudio's Data window
-View(variable_levels)
-
-cat("✅ Variable-level tagging template saved to:\n",
-    here("data", "drm_r", "outputs", "variable_levels_template.csv"), "\n")
-```
-
-
-## Identify Person-Level vs. Episode-Level Dataframes
-
-
-```{text}
-person_vars <- c("sona", "age", "gender", "baseline_wellbeing", ...)  # replace with actual vars
-df_person <- df_merged %>% select(any_of(person_vars))
-
-df_episode <- df_merged %>% select(-any_of(person_vars))
-```
+## Identify Person-Level vs. Episode-Level Dataframes + Coalesce Rows
 
 ```{r}
 # 📊 Coalesce rows: keep *non-NA values* where possible
 df_merged <- df %>%
   group_by(sona) %>%
   summarise(across(everything(), ~ reduce(.x, coalesce)), .groups = "drop")
-
-debug_df <- df %>%
-  filter(sona %in% duplicated_ids_list) %>%
-  arrange(sona)
-View(debug_df)
 
 # 🔍 Identify numeric columns from df_merged, EXCLUDING `sona` if it was coerced
 numeric_cols <- df_merged %>%
@@ -140,6 +153,25 @@ numeric_cols <- df_merged %>%
 
 # 📋 Preview
 head(numeric_cols)
+
+# 🧵 Split into person- and episode-level variable names (after df_merged is defined)
+person_vars <- variable_metadata %>%
+  filter(level == "1") %>%
+  pull(variable)
+
+episode_vars <- variable_metadata %>%
+  filter(level == "2") %>%
+  pull(variable)
+
+# ✂️ Split into two dataframes
+df_person <- df_merged %>% select(any_of(person_vars))
+df_episode <- df_merged %>% select(sona, any_of(episode_vars))
+
+# ✅ Confirm splits
+cat("Person-level vars:", length(person_vars), "\n")
+cat("Episode-level vars:", length(episode_vars), "\n")
+
+table(variable_metadata$level, useNA = "ifany")
 
 # 🔍 Identify numeric columns containing 99s
 columns_with_99 <- df %>%
@@ -229,6 +261,24 @@ df <- df %>%
 
 # 🔢 Count how many are missing
 table(df$sona_status)
+```
+
+## Create Human-Readable Labels for Graphs and Tables
+
+```{r}
+# 📛 Return human-readable label if available, else fallback to variable name
+labelize <- function(var_name, metadata = variable_metadata) {
+  label <- metadata %>%
+    filter(variable == var_name) %>%
+    pull(label)
+  
+  if (length(label) == 0 || is.na(label)) {
+    return(var_name)  # fallback to variable name
+  } else {
+    return(label)
+  }
+}
+
 ```
 
 ## 📊 Export Summary Statistics
@@ -350,15 +400,107 @@ head(outlier_df)
 
 ```
 
-# NOTE: CONEVERT BELOW TO r INSTEAD OF TEXT
-
-## Audio Missingness Patterns
+## ✅ Summary of missingness
 
 ```{r}
-missing_summary <- df_merged %>%
+# 📊 Summary of missing values per variable
+missing_summary_person <- df_person %>%
   summarise(across(everything(), ~ sum(is.na(.)))) %>%
-  pivot_longer(cols = everything(), names_to = "variable", values_to = "missing_n") %>%
-  arrange(desc(missing_n))
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
+  arrange(desc(n_missing))
+
+missing_summary_episode <- df_episode %>%
+  summarise(across(everything(), ~ sum(is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
+  arrange(desc(n_missing))
+```
+
+## 🧾 Attach Labels to Missingness Tables
+
+```{r}
+# Add human-readable labels
+missing_summary_person <- missing_summary_person %>%
+  left_join(variable_metadata, by = "variable") %>%
+  arrange(desc(n_missing))
+
+missing_summary_episode <- missing_summary_episode %>%
+  left_join(variable_metadata, by = "variable") %>%
+  arrange(desc(n_missing))
+```
+
+## 💾 Save Audit Files
+
+```{r}
+write_csv(missing_summary_person, here("data", "drm_r", "outputs", "missing_summary_person.csv"))
+write_csv(missing_summary_episode, here("data", "drm_r", "outputs", "missing_summary_episode.csv"))
+```
+
+## 🔍 Identify High-Missingness Variables
+```{r}
+# 🧮 Set threshold to flag high missingness
+threshold <- 0.5
+
+# 🚩 Person-level variables
+high_missing_person <- missing_summary_person %>%
+  mutate(missing_prop = n_missing / nrow(df_person)) %>%
+  filter(missing_prop > threshold)
+
+# 🚩 Episode-level variables
+high_missing_episode <- missing_summary_episode %>%
+  mutate(missing_prop = n_missing / nrow(df_episode)) %>%
+  filter(missing_prop > threshold)
+
+# 💾 Save to outputs
+write_csv(high_missing_person, here("data", "drm_r", "outputs", "high_missing_person.csv"))
+write_csv(high_missing_episode, here("data", "drm_r", "outputs", "high_missing_episode.csv"))
+```
+
+## 🔬 Optional: Visualize Missingness
+
+```{r}
+library(naniar)
+
+# 🔍 Visual patterns of missingness
+gg_miss_upset(df_person)
+gg_miss_upset(df_episode)
+
+# Or a heatmap-style overview
+vis_miss(df_person, sort_miss = TRUE) + ggtitle("Missing Map — Person-Level")
+vis_miss(df_episode, sort_miss = TRUE) + ggtitle("Missing Map — Episode-Level")
+```
+
+## 🔄 Recode NAs to 0 for Multi-Selection Columns (Episode-Level)
+
+```{r}
+# 🧩 Some columns use NA to mean "not selected" — convert to 0
+df_episode <- df_episode %>%
+  mutate(across(matches("^c[0-9]+option[0-9]+$"), ~ replace_na(., 0)))  # adjust regex as needed
+```
+
+## 🚩 Flag Participants with Excessive Missingness in a Key Variable
+
+```{r}
+# 📌 Placeholder for composite variable missingness
+# To activate once emotion_regulation_score is created
+# df_episode %>%
+#   group_by(sona) %>%
+#   summarise(missing_rate = mean(is.na(emotion_regulation_score))) %>%
+#   filter(missing_rate > 0.5)
+```
+
+## 📊 Summarize With NA-Resilient Functions
+
+```{r}
+# 🧠 Use summary stats that handle NA automatically
+summary_stats <- df %>%
+  summarise(across(where(is.numeric), list(
+    mean = ~mean(., na.rm = TRUE),
+    sd   = ~sd(., na.rm = TRUE),
+    n    = ~sum(!is.na(.))
+  ), .names = "{.col}_{.fn}"))
+
+# 💾 Export if needed
+write_csv(summary_stats, here("data", "drm_r", "outputs", "summary_stats_resilient.csv"))
 ```
 
 ## Tag Columns That Represent Non-Selections
@@ -371,49 +513,38 @@ df_episode <- df_episode %>%
 
 ```
 
-## Set a Threshold to Flag “Too Much Missing”
+## 🚩 Flag Cases with Partial Completion
 
 ```{text}
-
-df_episode %>%
-  group_by(sona) %>%
-  summarise(missing_rate = mean(is.na(emotion_regulation_score))) %>%
-  filter(missing_rate > 0.5)
-```
-
-## Don't Impute - Summarize With NA-Resilient Functions
-
-```{text}
-df %>%
-  summarise(across(where(is.numeric), list(mean = ~mean(., na.rm = TRUE),
-                                           sd = ~sd(., na.rm = TRUE),
-                                           n = ~sum(!is.na(.)))))
-```
-
-
-## Flag Cases with Partial Completion
-
-```{text}
+# 🛑 Mark participants with >30% missing on "q" items
 df <- df %>%
   mutate(partially_complete = rowMeans(is.na(across(starts_with("q")))) > 0.3)
+
+# 📊 Count of partial completions
+table(df$partially_complete)
 ```
 
-## Document Assumptions About Missingness
+📝 Document Assumptions About Missingness
 
-```{text}
-In your analytic memo or script comments, briefly document:
+```{markdown}
+### Assumptions About Missing Data
 
-- When missing = skipped vs. not applicable
-- That you use NA-resilient summaries
-- That no listwise deletion or imputation was used (unless added later)
+- Missing values arise from skipped items, forgotten entries, or non-applicability.
+- Multi-select NAs (e.g., `c01option1`) were recoded to `0` to reflect "not selected."
+- Summary statistics are NA-resilient (`na.rm = TRUE`).
+- No listwise deletion or imputation was used at this stage of analysis.
+- Variables exceeding 50% missingness were logged separately.
 ```
 
-## Create missingness_df for Review
+🗃️ Create Final Missingness Audit Table
 
-```{text}
+```{r}
 missingness_df <- df_merged %>%
   summarise(across(everything(), ~ sum(is.na(.)))) %>%
   pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
-  arrange(desc(n_missing))
-```
+  arrange(desc(n_missing)) %>%
+  left_join(variable_metadata, by = "variable")
 
+# 💾 Save for recordkeeping
+write_csv(missingness_df, here("data", "drm_r", "outputs", "missingness_df.csv"))
+```
