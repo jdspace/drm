@@ -524,9 +524,9 @@ df <- df %>%
 table(df$partially_complete)
 ```
 
-📝 Document Assumptions About Missingness
+## 📝 Document Assumptions About Missingness
 
-```{markdown}
+```{text}
 ### Assumptions About Missing Data
 
 - Missing values arise from skipped items, forgotten entries, or non-applicability.
@@ -536,7 +536,7 @@ table(df$partially_complete)
 - Variables exceeding 50% missingness were logged separately.
 ```
 
-🗃️ Create Final Missingness Audit Table
+## 🗃️ Create Final Missingness Audit Table
 
 ```{r}
 missingness_df <- df_merged %>%
@@ -544,6 +544,12 @@ missingness_df <- df_merged %>%
   pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
   arrange(desc(n_missing)) %>%
   left_join(variable_metadata, by = "variable")
+```
+
+## 📦 Bundle Final Clean Dataframes
+
+```{r}
+write_rds(df, here("data", "drm_r", "outputs", "df_cleaned.rds"))
 
 # 💾 Save for recordkeeping
 write_csv(missingness_df, here("data", "drm_r", "outputs", "missingness_df.csv"))
