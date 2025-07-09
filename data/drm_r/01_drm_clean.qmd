@@ -87,7 +87,41 @@ duplicated_ids <- df %>%
 
 # 💾 Save to output folder
 write_csv(duplicated_ids, here("data", "drm_r", "outputs", "duplicated_ids.csv"))
+```
 
+
+## Identify Person-Level vs. Episode-Level Dataframes
+
+
+```{r}
+# 📋 Create a variable-level tagging template for manual review
+variable_levels <- tibble(
+  variable = names(df),
+  level = ""  # Placeholder to manually enter 'person' or 'episode'
+)
+
+# 💾 Save to outputs folder for tagging
+write_csv(variable_levels, here("data", "drm_r", "outputs", "variable_levels_template.csv"))
+
+# 👁️ View in RStudio's Data window
+View(variable_levels)
+
+cat("✅ Variable-level tagging template saved to:\n",
+    here("data", "drm_r", "outputs", "variable_levels_template.csv"), "\n")
+```
+
+
+## Identify Person-Level vs. Episode-Level Dataframes
+
+
+```{text}
+person_vars <- c("sona", "age", "gender", "baseline_wellbeing", ...)  # replace with actual vars
+df_person <- df_merged %>% select(any_of(person_vars))
+
+df_episode <- df_merged %>% select(-any_of(person_vars))
+```
+
+```{r}
 # 📊 Coalesce rows: keep *non-NA values* where possible
 df_merged <- df %>%
   group_by(sona) %>%
@@ -314,5 +348,72 @@ outlier_df <- df %>%
 cat("Number of outliers flagged:", nrow(outlier_df), "\n")
 head(outlier_df)
 
+```
+
+# NOTE: CONEVERT BELOW TO r INSTEAD OF TEXT
+
+## Audio Missingness Patterns
+
+```{r}
+missing_summary <- df_merged %>%
+  summarise(across(everything(), ~ sum(is.na(.)))) %>%
+  pivot_longer(cols = everything(), names_to = "variable", values_to = "missing_n") %>%
+  arrange(desc(missing_n))
+```
+
+## Tag Columns That Represent Non-Selections
+
+```{text}
+
+# Recode NAs to 0 if NA means "not selected"
+df_episode <- df_episode %>%
+  mutate(across(matches("^c[0-9]+option[0-9]+$"), ~ replace_na(., 0)))  # adjust regex as needed
+
+```
+
+## Set a Threshold to Flag “Too Much Missing”
+
+```{text}
+
+df_episode %>%
+  group_by(sona) %>%
+  summarise(missing_rate = mean(is.na(emotion_regulation_score))) %>%
+  filter(missing_rate > 0.5)
+```
+
+## Don't Impute - Summarize With NA-Resilient Functions
+
+```{text}
+df %>%
+  summarise(across(where(is.numeric), list(mean = ~mean(., na.rm = TRUE),
+                                           sd = ~sd(., na.rm = TRUE),
+                                           n = ~sum(!is.na(.)))))
+```
+
+
+## Flag Cases with Partial Completion
+
+```{text}
+df <- df %>%
+  mutate(partially_complete = rowMeans(is.na(across(starts_with("q")))) > 0.3)
+```
+
+## Document Assumptions About Missingness
+
+```{text}
+In your analytic memo or script comments, briefly document:
+
+- When missing = skipped vs. not applicable
+- That you use NA-resilient summaries
+- That no listwise deletion or imputation was used (unless added later)
+```
+
+## Create missingness_df for Review
+
+```{text}
+missingness_df <- df_merged %>%
+  summarise(across(everything(), ~ sum(is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
+  arrange(desc(n_missing))
 ```
 
