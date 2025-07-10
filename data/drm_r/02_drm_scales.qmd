@@ -1,0 +1,263 @@
+---
+title: "02_scales_analysis"
+author: "Jeremy D. Faulk"
+format: html
+editor: visual
+---
+
+# 📁 01 – Load Cleaned Data {.collapse}
+
+```{r}
+# 📦 Load libraries
+library(here)
+library(tidyverse)
+library(psych)
+library(janitor)
+library(skimr)
+library(scales)
+
+# 🔄 Load data
+df_person  <- read_csv(here("data", "drm_r", "outputs", "df_person.csv"))
+df_episode <- read_csv(here("data", "drm_r", "outputs", "df_episode.csv"))
+
+# 🧼 Missing Data Handling
+# All scale composites (e.g., MTUS subscales, SWLS) are calculated using `rowSums(..., na.rm = TRUE)`,
+# which excludes missing values from each participant’s score as long as they have partial data.
+# For visualization (e.g., MTUS by gender), participants with missing values in grouping variables (e.g., `gen`)
+# or scale totals (e.g., `mtus_total`) are filtered out using `filter(!is.na(...))`.
+# No additional imputation has been applied. Missing values are preserved for transparency.
+
+# ✅ Merge in all needed person-level data (gen + swls1–swls5)
+df <- df_episode %>%
+  left_join(select(df_person, sona, gen, swls1:swls5), by = "sona")
+
+# 🏷️ Convert gen to factor AFTER the merge
+df <- df %>%
+  mutate(gen = factor(gen,
+                      levels = c(1, 4, 5, 6, 7, 8, 9, 10),
+                      labels = c("Man", "Woman", "Trans man", "Trans woman",
+                                 "Non-binary", "Not sure", "Other", "Prefer not to say")))
+
+# 👀 Check that gen merged properly
+table(df$gen, useNA = "always")
+
+# ✅ Preview
+head(df_person)
+head(df_episode)
+head(df)
+```
+
+------------------------------------------------------------------------
+
+# 🧪 02 – Construct Composite Scales {.collapse}
+
+## 🧠 Subjective Well-being: Satisfaction With Life Scale (SWLS)
+
+```{r}
+# Create SWLS composite (sum of 5 items)
+df <- df %>%
+  mutate(
+    swls_sum = rowSums(select(., swls1:swls5), na.rm = TRUE)
+  )
+
+# Optional scoring categories:
+# 31–35: Extremely satisfied
+# 26–30: Satisfied
+# 21–25: Slightly satisfied
+# 20: Neutral
+# 15–19: Slightly dissatisfied
+# 10–14: Dissatisfied
+# 5–9: Extremely dissatisfied
+
+# Create a categorical version of the SWLS total score
+df <- df %>%
+  mutate(
+    swls_level = case_when(
+      swls_sum >= 31              ~ "Extremely satisfied",
+      swls_sum >= 26 & swls_sum <= 30 ~ "Satisfied",
+      swls_sum >= 21 & swls_sum <= 25 ~ "Slightly satisfied",
+      swls_sum == 20              ~ "Neutral",
+      swls_sum >= 15 & swls_sum <= 19 ~ "Slightly dissatisfied",
+      swls_sum >= 10 & swls_sum <= 14 ~ "Dissatisfied",
+      swls_sum >= 5  & swls_sum <= 9  ~ "Extremely dissatisfied",
+      TRUE                         ~ NA_character_
+    )
+  )
+
+## 🧠 Subjective Well-being: SWLS Summary and Reliability
+
+# 📊 Plot: Distribution of SWLS satisfaction categories
+df %>%
+  filter(!is.na(swls_level)) %>%
+  ggplot(aes(x = swls_level)) +
+  geom_bar() +
+  labs(
+    title = "Distribution of SWLS (Life Satisfaction) Categories",
+    x = "SWLS Category",
+    y = "Count"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1))
+
+# 📏 Reliability (Cronbach’s alpha)
+library(psych)
+psych::alpha(df %>% select(swls1:swls5))
+
+# 👀 Quick structure peek
+head(df)
+```
+
+## 📱 Media and Technology Usage Scale (MTUS)
+
+```{r}
+df <- df %>%
+  left_join(
+    select(df_person, sona,
+           starts_with("mtus_")),  # pulls in all MTUS variables
+    by = "sona"
+  )
+
+df <- df %>%
+  mutate(
+    mtus_email_subscale = rowSums(select(., mtus_mail1:mtus_mail4), na.rm = TRUE),
+    mtus_text_subscale  = rowSums(select(., mtus_text1:mtus_text2), na.rm = TRUE),
+    mtus_call_subscale  = rowSums(select(., mtus_call1:mtus_call2), na.rm = TRUE),
+    mtus_smartphone_subscale = rowSums(select(., mtus_phone1:mtus_phone9), na.rm = TRUE),
+    mtus_tv_subscale = rowSums(select(., mtus_tv1:mtus_tv2), na.rm = TRUE),
+    mtus_share_subscale = rowSums(select(., mtus_share1:mtus_share8), na.rm = TRUE),
+    mtus_game_subscale = rowSums(select(., mtus_game1:mtus_game3), na.rm = TRUE),
+    mtus_socialmedia_subscale = rowSums(select(., mtus_social1:mtus_social9), na.rm = TRUE),
+    mtus_friend_subscale = rowSums(select(., mtus_friend1:mtus_friend4), na.rm = TRUE)
+  ) %>%
+  mutate(
+    mtus_phone_all = rowSums(select(., mtus_text_subscale, mtus_call_subscale, mtus_smartphone_subscale), na.rm = TRUE),
+    mtus_total = rowSums(select(., mtus_email_subscale, mtus_phone_all, mtus_tv_subscale,
+                                mtus_share_subscale, mtus_game_subscale,
+                                mtus_socialmedia_subscale, mtus_friend_subscale), na.rm = TRUE)
+  )
+
+## 👥 MTUS Subscale Contributions by Gender
+
+# 📊 Mean MTUS Total by Gender
+df %>%
+  filter(!is.na(gen)) %>%
+  ggplot(aes(x = gen, y = mtus_total, fill = gen)) +   # <== no df inside ggplot()
+  stat_summary(geom = "col", fun = mean) +
+  labs(
+    title = "Mean MTUS Total Score by Gender",
+    x = "Gender",
+    y = "Mean MTUS Total Score"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 25, hjust = 1))
+
+```
+
+## 🧠 Believes about Well-being Scale (BWBS) Scale Construction: Lay Hedonism & Lay Eudaimonism
+
+```{r}
+
+  # BWBS Subscales
+  library(tidyverse)
+
+df_person <- df_person %>%
+  mutate(
+    # Subscales
+    bwbs_ep = rowSums(select(., bwbs01, bwbs02, bwbs09, bwbs12), na.rm = TRUE),  # experiencing pleasure
+    bwbs_ane = rowSums(select(., bwbs04, bwbs07, bwbs14, bwbs16), na.rm = TRUE), # avoiding negative experience
+    bwbs_co = rowSums(select(., bwbs06, bwbs08, bwbs11, bwbs15), na.rm = TRUE),  # contributing to others
+    bwbs_sd = rowSums(select(., bwbs03, bwbs05, bwbs10, bwbs13), na.rm = TRUE),  # self-development
+
+    # Superfactors
+    bwbs_hedonism = bwbs_ep + bwbs_ane,
+    bwbs_eudaimonism = bwbs_co + bwbs_sd,
+
+    # Total Score
+    bwbs_total = rowSums(select(., bwbs01:bwbs16), na.rm = TRUE)
+  )
+
+  library(psych)
+
+# Cronbach's alpha for each subscale
+psych::alpha(select(df_person, bwbs01, bwbs02, bwbs09, bwbs12))   # bwbs_ep
+psych::alpha(select(df_person, bwbs04, bwbs07, bwbs14, bwbs16))   # bwbs_ane
+psych::alpha(select(df_person, bwbs06, bwbs08, bwbs11, bwbs15))   # bwbs_co
+psych::alpha(select(df_person, bwbs03, bwbs05, bwbs10, bwbs13))   # bwbs_sd
+psych::alpha(select(df_person, bwbs01:bwbs16))                    # total scale
+
+df_person %>%
+  summarise(
+    n = n(),
+    bwbs_ep_mean = mean(bwbs_ep, na.rm = TRUE),
+    bwbs_ane_mean = mean(bwbs_ane, na.rm = TRUE),
+    bwbs_co_mean = mean(bwbs_co, na.rm = TRUE),
+    bwbs_sd_mean = mean(bwbs_sd, na.rm = TRUE),
+    bwbs_hedonism_mean = mean(bwbs_hedonism, na.rm = TRUE),
+    bwbs_eudaimonism_mean = mean(bwbs_eudaimonism, na.rm = TRUE),
+    bwbs_total_mean = mean(bwbs_total, na.rm = TRUE)
+  )
+
+df_person %>%
+  summarise(
+    n = n(),
+    bwbs_hedonism_mean = mean(bwbs_hedonism, na.rm = TRUE),
+    bwbs_eudaimonism_mean = mean(bwbs_eudaimonism, na.rm = TRUE),
+    bwbs_total_mean = mean(bwbs_total, na.rm = TRUE),
+    bwbs_hedonism_sd = sd(bwbs_hedonism, na.rm = TRUE),
+    bwbs_eudaimonism_sd = sd(bwbs_eudaimonism, na.rm = TRUE),
+    bwbs_total_sd = sd(bwbs_total, na.rm = TRUE)
+  )
+
+# 📊 Mean BWBS Total by Gender with Error Bars
+df_person %>%
+  filter(!is.na(gen)) %>%
+  mutate(
+    gen_label = recode(
+      gen,
+      `1` = "Man/Cis man/Male",
+      `4` = "Woman/Cis woman/Female",
+      `5` = "Transgender man",
+      `6` = "Transgender woman",
+      `7` = "Non-binary/Gender nonconforming",
+      `8` = "Not sure",
+      `9` = "Something else",
+      `10` = "Prefer not to say"
+    )
+  ) %>%
+  group_by(gen_label) %>%
+  summarise(
+    bwbs_total_mean = mean(bwbs_total, na.rm = TRUE),
+    bwbs_total_sd   = sd(bwbs_total, na.rm = TRUE),
+    n = n()
+  ) %>%
+  ggplot(aes(x = gen_label, y = bwbs_total_mean, fill = gen_label)) +
+  geom_col(width = 0.6) +
+  geom_errorbar(aes(ymin = bwbs_total_mean - bwbs_total_sd,
+                    ymax = bwbs_total_mean + bwbs_total_sd),
+                width = 0.2, color = "black") +
+  labs(
+    title = "BWBS Total Score by Gender",
+    x = "Gender Identity",
+    y = "Mean BWBS Total (±1 SD)"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 30, hjust = 1),
+    legend.position = "none"
+  )
+
+```
+
+
+------------------------------------------------------------------------
+
+## 📊 03 – Descriptive Statistics {.collapse}
+
+```{text}
+
+\`\`\`{r} \# 📋 Summary table of key composite scores df_person %\>% select(swls_score) %\>% summarise( mean = mean(swls_score, na.rm = TRUE), sd = sd(swls_score, na.rm = TRUE), n = sum(!is.na(swls_score)) )
+
+# 📄 Skim summary
+
+skimr::skim(df_person)
+```

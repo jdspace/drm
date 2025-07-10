@@ -1,9 +1,27 @@
 ---
 title: "01_drm_clean"
-author: "Jeremy Faulk"
+author: "Jeremy D. Faulk"
 format: html
 editor: visual
 ---
+
+## Summary
+
+```{text}
+
+Cleaning Steps Accomplished With This Script:
+
+✅ Structured parsing and standardization of column names
+✅ Junk/metadata row removal
+✅ Exclusion of problematic participants
+✅ All-NA column drops (with audit log)
+✅ Conversion of 99s to NA
+✅ Variable-level missingness audits with metadata
+✅ Separation into person- and episode-level frames
+✅ Label-mapped summaries and visualizations
+✅ Assumption logging and reproducibility 
+
+```
 
 ## Setup
 
@@ -229,6 +247,7 @@ cat("Remaining participants after exclusion:", nrow(df), "\n")
 ```
 
 ## 🚫 Drop Columns Without Useful Data
+
 ```{r}
 # 🧹 Identify columns to drop by pattern (prefix or exact match)
 cols_to_drop <- grep(
@@ -314,7 +333,8 @@ system("git push")
 # - You’ll run this chunk manually (e.g., click the green ▶️ in the corner), **when** you want to push to GitHub.
 
 ```
---------------------
+
+------------------------------------------------------------------------
 
 ## 🚫 .gitignore Reference
 
@@ -436,6 +456,7 @@ write_csv(missing_summary_episode, here("data", "drm_r", "outputs", "missing_sum
 ```
 
 ## 🔍 Identify High-Missingness Variables
+
 ```{r}
 # 🧮 Set threshold to flag high missingness
 threshold <- 0.5
@@ -544,6 +565,9 @@ missingness_df <- df_merged %>%
   pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
   arrange(desc(n_missing)) %>%
   left_join(variable_metadata, by = "variable")
+
+# 💾 Save for recordkeeping
+write_csv(missingness_df, here("data", "drm_r", "outputs", "missingness_df.csv"))
 ```
 
 ## 📦 Bundle Final Clean Dataframes
@@ -551,6 +575,7 @@ missingness_df <- df_merged %>%
 ```{r}
 write_rds(df, here("data", "drm_r", "outputs", "df_cleaned.rds"))
 
-# 💾 Save for recordkeeping
-write_csv(missingness_df, here("data", "drm_r", "outputs", "missingness_df.csv"))
+write_csv(df, here("data", "drm_r", "outputs", "df_cleaned.csv"))
+write_csv(df_person, here("data", "drm_r", "outputs", "df_person.csv"))
+write_csv(df_episode, here("data", "drm_r", "outputs", "df_episode.csv"))
 ```
