@@ -7,257 +7,394 @@ editor: visual
 
 # 📁 01 – Load Cleaned Data {.collapse}
 
+## 📥 01 – Load Cleaned Data {.collapse}
+
 ```{r}
-# 📦 Load libraries
 library(here)
 library(tidyverse)
 library(psych)
 library(janitor)
 library(skimr)
 library(scales)
+library(knitr)
+library(kableExtra)
+library(cluster)
+library(factoextra)
+library(stringr)
+library(fmsb)
 
-# 🔄 Load data
-df_person  <- read_csv(here("data", "drm_r", "outputs", "df_person.csv"))
-df_episode <- read_csv(here("data", "drm_r", "outputs", "df_episode.csv"))
+# File paths
+df_person <- read_csv(here("outputs", "df_person.csv"))
+df_episode <- read_csv(here("outputs", "df_episode.csv"))
 
-# 🧼 Missing Data Handling
-# All scale composites (e.g., MTUS subscales, SWLS) are calculated using `rowSums(..., na.rm = TRUE)`,
-# which excludes missing values from each participant’s score as long as they have partial data.
-# For visualization (e.g., MTUS by gender), participants with missing values in grouping variables (e.g., `gen`)
-# or scale totals (e.g., `mtus_total`) are filtered out using `filter(!is.na(...))`.
-# No additional imputation has been applied. Missing values are preserved for transparency.
-
-# ✅ Merge in all needed person-level data (gen + swls1–swls5)
+# Merge episode-level with selected person-level variables
 df <- df_episode %>%
   left_join(select(df_person, sona, gen, swls1:swls5), by = "sona")
 
-# 🏷️ Convert gen to factor AFTER the merge
+# Recoding gender
 df <- df %>%
   mutate(gen = factor(gen,
                       levels = c(1, 4, 5, 6, 7, 8, 9, 10),
                       labels = c("Man", "Woman", "Trans man", "Trans woman",
                                  "Non-binary", "Not sure", "Other", "Prefer not to say")))
 
-# 👀 Check that gen merged properly
 table(df$gen, useNA = "always")
-
-# ✅ Preview
 head(df_person)
 head(df_episode)
 head(df)
-```
 
-------------------------------------------------------------------------
+```
 
 # 🧪 02 – Construct Composite Scales {.collapse}
 
 ## 🧠 Subjective Well-being: Satisfaction With Life Scale (SWLS)
 
 ```{r}
-# Create SWLS composite (sum of 5 items)
 df <- df %>%
-  mutate(
-    swls_sum = rowSums(select(., swls1:swls5), na.rm = TRUE)
-  )
+  mutate(swls_sum = rowSums(select(., swls1:swls5), na.rm = TRUE))
 
-# Optional scoring categories:
-# 31–35: Extremely satisfied
-# 26–30: Satisfied
-# 21–25: Slightly satisfied
-# 20: Neutral
-# 15–19: Slightly dissatisfied
-# 10–14: Dissatisfied
-# 5–9: Extremely dissatisfied
-
-# Create a categorical version of the SWLS total score
 df <- df %>%
-  mutate(
-    swls_level = case_when(
-      swls_sum >= 31              ~ "Extremely satisfied",
-      swls_sum >= 26 & swls_sum <= 30 ~ "Satisfied",
-      swls_sum >= 21 & swls_sum <= 25 ~ "Slightly satisfied",
-      swls_sum == 20              ~ "Neutral",
-      swls_sum >= 15 & swls_sum <= 19 ~ "Slightly dissatisfied",
-      swls_sum >= 10 & swls_sum <= 14 ~ "Dissatisfied",
-      swls_sum >= 5  & swls_sum <= 9  ~ "Extremely dissatisfied",
-      TRUE                         ~ NA_character_
-    )
-  )
+  mutate(swls_level = case_when(
+    swls_sum >= 31 ~ "Extremely satisfied",
+    swls_sum >= 26 & swls_sum <= 30 ~ "Satisfied",
+    swls_sum >= 21 & swls_sum <= 25 ~ "Slightly satisfied",
+    swls_sum == 20 ~ "Neutral",
+    swls_sum >= 15 & swls_sum <= 19 ~ "Slightly dissatisfied",
+    swls_sum >= 10 & swls_sum <= 14 ~ "Dissatisfied",
+    swls_sum >= 5  & swls_sum <= 9  ~ "Extremely dissatisfied",
+    TRUE ~ NA_character_
+  ))
 
-## 🧠 Subjective Well-being: SWLS Summary and Reliability
-
-# 📊 Plot: Distribution of SWLS satisfaction categories
 df %>%
   filter(!is.na(swls_level)) %>%
   ggplot(aes(x = swls_level)) +
   geom_bar() +
-  labs(
-    title = "Distribution of SWLS (Life Satisfaction) Categories",
-    x = "SWLS Category",
-    y = "Count"
-  ) +
+  labs(title = "Distribution of SWLS (Life Satisfaction) Categories",
+       x = "SWLS Category", y = "Count") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 25, hjust = 1))
 
-# 📏 Reliability (Cronbach’s alpha)
-library(psych)
 psych::alpha(df %>% select(swls1:swls5))
-
-# 👀 Quick structure peek
 head(df)
 ```
 
 ## 📱 Media and Technology Usage Scale (MTUS)
 
 ```{r}
-df <- df %>%
-  left_join(
-    select(df_person, sona,
-           starts_with("mtus_")),  # pulls in all MTUS variables
-    by = "sona"
+# 📊 Compute MTUS subscales in df_person (sum + mean)
+df_person <- df_person %>%
+  mutate(
+    mtus_email_subscale        = rowSums(select(., mtus_mail1:mtus_mail4), na.rm = TRUE),
+    mtus_text_subscale         = rowSums(select(., mtus_text1:mtus_text2), na.rm = TRUE),
+    mtus_call_subscale         = rowSums(select(., mtus_call1:mtus_call2), na.rm = TRUE),
+    mtus_smartphone_subscale   = rowSums(select(., mtus_phone1:mtus_phone9), na.rm = TRUE),
+    mtus_tv_subscale           = rowSums(select(., mtus_tv1:mtus_tv2), na.rm = TRUE),
+    mtus_share_subscale        = rowSums(select(., mtus_share1:mtus_share8), na.rm = TRUE),
+    mtus_game_subscale         = rowSums(select(., mtus_game1:mtus_game3), na.rm = TRUE),
+    mtus_socialmedia_subscale  = rowSums(select(., mtus_social1:mtus_social9), na.rm = TRUE),
+    mtus_friend_subscale       = rowSums(select(., mtus_friend1:mtus_friend4), na.rm = TRUE),
+
+    # Means (to use for clustering, standardized)
+    mtus_email_subscale_mean       = mtus_email_subscale / 4,
+    mtus_text_subscale_mean        = mtus_text_subscale / 2,
+    mtus_call_subscale_mean        = mtus_call_subscale / 2,
+    mtus_smartphone_subscale_mean  = mtus_smartphone_subscale / 9,
+    mtus_tv_subscale_mean          = mtus_tv_subscale / 2,
+    mtus_share_subscale_mean       = mtus_share_subscale / 8,
+    mtus_game_subscale_mean        = mtus_game_subscale / 3,
+    mtus_socialmedia_subscale_mean = mtus_socialmedia_subscale / 9,
+    mtus_friend_subscale_mean      = mtus_friend_subscale / 4,
+
+    # 📱 Composite: any phone usage
+    mtus_phone_all = rowSums(select(., mtus_text_subscale, mtus_call_subscale, mtus_smartphone_subscale), na.rm = TRUE)
   )
 
-df <- df %>%
+# 🔢 Total MTUS score
+df_person <- df_person %>%
   mutate(
-    mtus_email_subscale = rowSums(select(., mtus_mail1:mtus_mail4), na.rm = TRUE),
-    mtus_text_subscale  = rowSums(select(., mtus_text1:mtus_text2), na.rm = TRUE),
-    mtus_call_subscale  = rowSums(select(., mtus_call1:mtus_call2), na.rm = TRUE),
-    mtus_smartphone_subscale = rowSums(select(., mtus_phone1:mtus_phone9), na.rm = TRUE),
-    mtus_tv_subscale = rowSums(select(., mtus_tv1:mtus_tv2), na.rm = TRUE),
-    mtus_share_subscale = rowSums(select(., mtus_share1:mtus_share8), na.rm = TRUE),
-    mtus_game_subscale = rowSums(select(., mtus_game1:mtus_game3), na.rm = TRUE),
-    mtus_socialmedia_subscale = rowSums(select(., mtus_social1:mtus_social9), na.rm = TRUE),
-    mtus_friend_subscale = rowSums(select(., mtus_friend1:mtus_friend4), na.rm = TRUE)
-  ) %>%
-  mutate(
-    mtus_phone_all = rowSums(select(., mtus_text_subscale, mtus_call_subscale, mtus_smartphone_subscale), na.rm = TRUE),
-    mtus_total = rowSums(select(., mtus_email_subscale, mtus_phone_all, mtus_tv_subscale,
-                                mtus_share_subscale, mtus_game_subscale,
-                                mtus_socialmedia_subscale, mtus_friend_subscale), na.rm = TRUE)
+    mtus_total = rowSums(pick(c(
+      mtus_email_subscale,
+      mtus_phone_all,
+      mtus_tv_subscale,
+      mtus_share_subscale,
+      mtus_game_subscale,
+      mtus_socialmedia_subscale,
+      mtus_friend_subscale
+    )), na.rm = TRUE)
   )
 
-## 👥 MTUS Subscale Contributions by Gender
-
-# 📊 Mean MTUS Total by Gender
-df %>%
-  filter(!is.na(gen)) %>%
-  ggplot(aes(x = gen, y = mtus_total, fill = gen)) +   # <== no df inside ggplot()
-  stat_summary(geom = "col", fun = mean) +
-  labs(
-    title = "Mean MTUS Total Score by Gender",
-    x = "Gender",
-    y = "Mean MTUS Total Score"
-  ) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 25, hjust = 1))
 
 ```
 
-## 🧠 Believes about Well-being Scale (BWBS) Scale Construction: Lay Hedonism & Lay Eudaimonism
+## 🧠 Beliefs about Well-Being Scale (BWBS)
 
 ```{r}
-
-  # BWBS Subscales
-  library(tidyverse)
-
+# Create BWBS subscales and totals
 df_person <- df_person %>%
   mutate(
-    # Subscales
-    bwbs_ep = rowSums(select(., bwbs01, bwbs02, bwbs09, bwbs12), na.rm = TRUE),  # experiencing pleasure
-    bwbs_ane = rowSums(select(., bwbs04, bwbs07, bwbs14, bwbs16), na.rm = TRUE), # avoiding negative experience
-    bwbs_co = rowSums(select(., bwbs06, bwbs08, bwbs11, bwbs15), na.rm = TRUE),  # contributing to others
-    bwbs_sd = rowSums(select(., bwbs03, bwbs05, bwbs10, bwbs13), na.rm = TRUE),  # self-development
-
-    # Superfactors
+    bwbs_ep = rowSums(select(., bwbs01, bwbs02, bwbs09, bwbs12), na.rm = TRUE),
+    bwbs_ane = rowSums(select(., bwbs04, bwbs07, bwbs14, bwbs16), na.rm = TRUE),
+    bwbs_co = rowSums(select(., bwbs06, bwbs08, bwbs11, bwbs15), na.rm = TRUE),
+    bwbs_sd = rowSums(select(., bwbs03, bwbs05, bwbs10, bwbs13), na.rm = TRUE),
     bwbs_hedonism = bwbs_ep + bwbs_ane,
     bwbs_eudaimonism = bwbs_co + bwbs_sd,
-
-    # Total Score
     bwbs_total = rowSums(select(., bwbs01:bwbs16), na.rm = TRUE)
   )
 
-  library(psych)
+# Run reliability checks silently
+invisible(psych::alpha(select(df_person, bwbs01, bwbs02, bwbs09, bwbs12)))
+invisible(psych::alpha(select(df_person, bwbs04, bwbs07, bwbs14, bwbs16)))
+invisible(psych::alpha(select(df_person, bwbs06, bwbs08, bwbs11, bwbs15)))
+invisible(psych::alpha(select(df_person, bwbs03, bwbs05, bwbs10, bwbs13)))
+invisible(psych::alpha(select(df_person, bwbs01:bwbs16)))
 
-# Cronbach's alpha for each subscale
-psych::alpha(select(df_person, bwbs01, bwbs02, bwbs09, bwbs12))   # bwbs_ep
-psych::alpha(select(df_person, bwbs04, bwbs07, bwbs14, bwbs16))   # bwbs_ane
-psych::alpha(select(df_person, bwbs06, bwbs08, bwbs11, bwbs15))   # bwbs_co
-psych::alpha(select(df_person, bwbs03, bwbs05, bwbs10, bwbs13))   # bwbs_sd
-psych::alpha(select(df_person, bwbs01:bwbs16))                    # total scale
-
+# BWBS Hedonism & Eudaimonism by Binary Gender (Male/Female only)
 df_person %>%
-  summarise(
-    n = n(),
-    bwbs_ep_mean = mean(bwbs_ep, na.rm = TRUE),
-    bwbs_ane_mean = mean(bwbs_ane, na.rm = TRUE),
-    bwbs_co_mean = mean(bwbs_co, na.rm = TRUE),
-    bwbs_sd_mean = mean(bwbs_sd, na.rm = TRUE),
-    bwbs_hedonism_mean = mean(bwbs_hedonism, na.rm = TRUE),
-    bwbs_eudaimonism_mean = mean(bwbs_eudaimonism, na.rm = TRUE),
-    bwbs_total_mean = mean(bwbs_total, na.rm = TRUE)
-  )
-
-df_person %>%
-  summarise(
-    n = n(),
-    bwbs_hedonism_mean = mean(bwbs_hedonism, na.rm = TRUE),
-    bwbs_eudaimonism_mean = mean(bwbs_eudaimonism, na.rm = TRUE),
-    bwbs_total_mean = mean(bwbs_total, na.rm = TRUE),
-    bwbs_hedonism_sd = sd(bwbs_hedonism, na.rm = TRUE),
-    bwbs_eudaimonism_sd = sd(bwbs_eudaimonism, na.rm = TRUE),
-    bwbs_total_sd = sd(bwbs_total, na.rm = TRUE)
-  )
-
-# 📊 Mean BWBS Total by Gender with Error Bars
-df_person %>%
-  filter(!is.na(gen)) %>%
-  mutate(
-    gen_label = recode(
-      gen,
-      `1` = "Man/Cis man/Male",
-      `4` = "Woman/Cis woman/Female",
-      `5` = "Transgender man",
-      `6` = "Transgender woman",
-      `7` = "Non-binary/Gender nonconforming",
-      `8` = "Not sure",
-      `9` = "Something else",
-      `10` = "Prefer not to say"
-    )
-  ) %>%
-  group_by(gen_label) %>%
-  summarise(
-    bwbs_total_mean = mean(bwbs_total, na.rm = TRUE),
-    bwbs_total_sd   = sd(bwbs_total, na.rm = TRUE),
-    n = n()
-  ) %>%
-  ggplot(aes(x = gen_label, y = bwbs_total_mean, fill = gen_label)) +
-  geom_col(width = 0.6) +
-  geom_errorbar(aes(ymin = bwbs_total_mean - bwbs_total_sd,
-                    ymax = bwbs_total_mean + bwbs_total_sd),
+  filter(gen %in% c(1, 4)) %>%
+  mutate(gender = recode(gen, `1` = "Male", `4` = "Female")) %>%
+  pivot_longer(cols = c(bwbs_hedonism, bwbs_eudaimonism),
+               names_to = "subscale",
+               values_to = "score") %>%
+  group_by(gender, subscale) %>%
+  summarise(mean = mean(score, na.rm = TRUE),
+            sd = sd(score, na.rm = TRUE),
+            n = n(),
+            .groups = "drop") %>%
+  ggplot(aes(x = gender, y = mean, fill = subscale)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6) +
+  geom_errorbar(aes(ymin = mean - sd, ymax = mean + sd),
+                position = position_dodge(width = 0.7),
                 width = 0.2, color = "black") +
-  labs(
-    title = "BWBS Total Score by Gender",
-    x = "Gender Identity",
-    y = "Mean BWBS Total (±1 SD)"
-  ) +
+  scale_fill_manual(values = c("#F8766D", "#00BFC4"),
+                    labels = c("Hedonism", "Eudaimonism")) +
+  labs(title = "BWBS Subscale Scores by Gender",
+       x = "Gender Identity", y = "Mean Subscale Score (±1 SD)",
+       fill = "Subscale") +
   theme_minimal() +
+  theme(axis.text.x = element_text(size = 12),
+        legend.title = element_text(size = 11),
+        legend.text = element_text(size = 10))
+```
+# 03 – Descriptive Statistics
+
+# 04 – Inferential Analyses
+
+## 🔄 Merge BWBS Subscales + Cluster Prep
+
+```{r}
+# 📦 1. Merge BWBS & MTUS total into main df
+df <- df %>%
+  left_join(select(df_person, sona, bwbs_hedonism, bwbs_eudaimonism, mtus_total), by = "sona")
+
+# 🎯 2. Select relevant subscales
+df_cluster <- df_person %>%
+  select(sona, bwbs_hedonism, bwbs_eudaimonism, mtus_total) %>%
+  drop_na()
+
+# 🔁 3. Standardize variables
+df_cluster_scaled <- df_cluster %>%
+  mutate(across(-sona, scale))
+
+# 🧪 4. Run K-means clustering (k = 5)
+set.seed(123)
+km_res <- kmeans(df_cluster_scaled %>% select(-sona), centers = 5, nstart = 25)
+
+# 🧷 5. Add cluster membership
+df_cluster <- df_cluster %>%
+  mutate(cluster = as.factor(km_res$cluster))
+
+# 🔁 6. Pivot to long format for plotting
+df_cluster_long <- df_cluster %>%
+  pivot_longer(cols = -c(sona, cluster), names_to = "variable", values_to = "score")
+
+# 🔢 7. Standardize for plotting
+df_cluster_long_z <- df_cluster_long %>%
+  group_by(variable) %>%
+  mutate(zscore = scale(score)[,1]) %>%
+  ungroup()
+
+# 🏷️ 8. Add meaningful labels
+cluster_labels <- c(
+  "1" = "Balanced Eudaimonists",
+  "2" = "Low Beliefs + Low Tech",
+  "3" = "Low Tech Hedonists",
+  "4" = "Balanced Low Tech",
+  "5" = "Tech-Heavy Hedonists"
+)
+
+df_cluster_long_z <- df_cluster_long_z %>%
+  mutate(cluster_label = recode(cluster, !!!cluster_labels))
+
+# 🎨 9. 📊 Bar Chart (cluster means)
+wrapped_labels <- c(
+  "Balanced Eudaimonists" = "Balanced\nEudaimonists",
+  "Low Beliefs + Low Tech" = "Low Beliefs\n+ Low Tech",
+  "Low Tech Hedonists" = "Low Tech\nHedonists",
+  "Balanced Low Tech" = "Balanced\nLow Tech",
+  "Tech-Heavy Hedonists" = "Tech-Heavy\nHedonists"
+)
+
+ggplot(df_cluster_long_z, aes(x = variable, y = zscore, fill = cluster_label)) +
+  stat_summary(fun = mean, geom = "col", position = "dodge", width = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray60") +
+  scale_fill_manual(
+    values = c(
+      "Balanced Eudaimonists" = "#4E79A7",
+      "Low Beliefs + Low Tech" = "#F28E2B",
+      "Low Tech Hedonists" = "#59A14F",
+      "Balanced Low Tech" = "#EDC948",
+      "Tech-Heavy Hedonists" = "#B07AA1"
+    ),
+    labels = wrapped_labels
+  ) +
+  labs(
+    title = "Cluster Profiles: BWBS + MTUS",
+    x = NULL, y = "Z-Score",
+    fill = "K-Means\nCluster"
+  ) +
+  theme_minimal(base_size = 9) +
   theme(
-    axis.text.x = element_text(angle = 30, hjust = 1),
-    legend.position = "none"
+    plot.title = element_text(size = 11, face = "bold", hjust = 0.5),
+    axis.text.x = element_text(size = 9, angle = 15, hjust = 1),
+    axis.title.y = element_text(size = 9),
+    legend.title = element_text(size = 9, lineheight = 0.8),
+    legend.text = element_text(size = 8),
+    legend.position = "bottom",
+    legend.box = "horizontal",
+    legend.key.size = unit(0.4, "cm"),
+    legend.spacing.x = unit(0.5, "lines"),
+    legend.spacing.y = unit(0.3, "lines")
+  ) +
+  guides(fill = guide_legend(
+    direction = "horizontal", 
+    label.position = "bottom", 
+    nrow = 1
+  )) +
+  scale_x_discrete(labels = c(
+    "bwbs_hedonism" = "Hedonism",
+    "bwbs_eudaimonism" = "Eudaimonism",
+    "mtus_total" = "Total MTUS"
+  ))
+
+# 📈 10. Profile Plot
+ggplot(df_cluster_long_z, aes(x = variable, y = zscore, group = sona, color = cluster_label)) +
+  geom_line(alpha = 0.15) +
+  stat_summary(aes(group = cluster_label), fun = mean, geom = "line", size = 1.2) +
+  scale_color_manual(
+    values = c(
+      "Balanced Eudaimonists" = "#4E79A7",
+      "Low Beliefs + Low Tech" = "#F28E2B",
+      "Low Tech Hedonists" = "#59A14F",
+      "Balanced Low Tech" = "#EDC948",
+      "Tech-Heavy Hedonists" = "#B07AA1"
+    )
+  ) +
+  labs(
+    title = "Participant Profiles by Cluster (Z-Scores)",
+    x = NULL, y = "Standardized Score",
+    color = "K-Means Cluster"
+  ) +
+  theme_minimal(base_size = 9) +
+  theme(
+    plot.title = element_text(size = 10),
+    axis.text.x = element_text(size = 9, angle = 15, hjust = 1),
+    legend.title = element_text(size = 9),
+    legend.text = element_text(size = 8)
+  ) +
+  scale_x_discrete(labels = c(
+    "bwbs_hedonism" = "Hedonism",
+    "bwbs_eudaimonism" = "Eudaimonism",
+    "mtus_total" = "Total MTUS"
+  ))
+
+# 📉 11. Elbow method
+fviz_nbclust(df_cluster_scaled %>% select(-sona), kmeans, method = "wss") +
+  labs(title = "Elbow Method for Optimal K") +
+  theme(plot.title = element_text(size = 12))
+
+# 🧪 12. Silhouette plot
+fviz_silhouette(silhouette(km_res$cluster, dist(df_cluster_scaled %>% select(-sona)))) +
+  labs(title = "Silhouette Plot for K-Means Clustering") +
+  theme(plot.title = element_text(size = 12))
+
+# 📊 13. Summary table
+library(kableExtra)
+cluster_summary_table <- df_cluster_long_z %>%
+  group_by(cluster_label, variable) %>%
+  summarise(mean_z = mean(zscore, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(names_from = variable, values_from = mean_z) %>%
+  arrange(cluster_label)
+
+cluster_summary_table %>%
+  kbl(
+    caption = "Cluster Summary Table: Z-Scores by K-Means Cluster",
+    col.names = c("Cluster Label", "Hedonism", "Eudaimonism", "Total MTUS"),
+    digits = 2,
+    align = "c"
+  ) %>%
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover", "condensed"))
+
+# 📊 14. Table of raw means by cluster
+df_cluster %>%
+  group_by(cluster) %>%
+  summarise(
+    Hedonism = mean(bwbs_hedonism, na.rm = TRUE),
+    Eudaimonism = mean(bwbs_eudaimonism, na.rm = TRUE),
+    Total_MTUS = mean(mtus_total, na.rm = TRUE)
   )
 
-```
+df_cluster %>%
+  mutate(cluster_label = recode(cluster, !!!cluster_labels)) %>%
+  group_by(cluster_label) %>%
+  summarise(
+    Hedonism = mean(bwbs_hedonism, na.rm = TRUE),
+    Eudaimonism = mean(bwbs_eudaimonism, na.rm = TRUE),
+    Total_MTUS = mean(mtus_total, na.rm = TRUE)
+  )
 
+# 🕸️ 54. Radar Plot
+library(fmsb)
 
-------------------------------------------------------------------------
+# Prep data
+radar_data <- df_cluster_long_z %>%
+  group_by(cluster_label, variable) %>%
+  summarise(zscore = mean(zscore, na.rm = TRUE), .groups = "drop") %>%
+  pivot_wider(names_from = variable, values_from = zscore)
 
-## 📊 03 – Descriptive Statistics {.collapse}
+radar_chart_data <- radar_data %>%
+  column_to_rownames("cluster_label") %>%
+  rbind(rep(3, 3), rep(-4, 3)) %>%
+  relocate(everything())
 
-```{text}
+# Reorder rows so the fake max/min rows are on top
+radar_chart_data <- radar_chart_data[c((nrow(radar_chart_data)-1):nrow(radar_chart_data)-2, 1:(nrow(radar_chart_data)-2)), ]
 
-\`\`\`{r} \# 📋 Summary table of key composite scores df_person %\>% select(swls_score) %\>% summarise( mean = mean(swls_score, na.rm = TRUE), sd = sd(swls_score, na.rm = TRUE), n = sum(!is.na(swls_score)) )
+# Set consistent colors
+radar_colors <- c("#4E79A7", "#F28E2B", "#59A14F", "#EDC948", "#B07AA1")
 
-# 📄 Skim summary
+# Plot
+par(mar = c(2, 2, 3, 2))  # Margin tweak
+radarchart(
+  radar_chart_data,
+  axistype = 1,
+  pcol = radar_colors,
+  pfcol = scales::alpha(radar_colors, 0.2),
+  plwd = 2,
+  plty = 1,
+  cglcol = "gray70",
+  cglty = 1,
+  cglwd = 0.7,
+  caxislabels = seq(-4, 3, 1),
+  axislabcol = "gray40",
+  vlcex = 0.8,
+  title = "Radar Plot: Cluster Z-Scores\n(BWBS + MTUS)"
+)
 
-skimr::skim(df_person)
+legend(
+  "topright",
+  legend = rownames(radar_data),
+  col = radar_colors,
+  lty = 1, lwd = 2,
+  cex = 0.7, bty = "n", inset = 0.01
+)
 ```
